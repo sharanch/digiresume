@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Digital Resume</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50%;
+            height: 4px;
+            background-color: currentColor;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+
+    <!-- Header & Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-lg">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-blue-400">Sharan Chenna</a>
+            <div class="hidden md:flex space-x-6">
+                <a href="#summary" class="text-gray-300 hover:text-white transition duration-300">Summary</a>
+                <a href="#experience" class="text-gray-300 hover:text-white transition duration-300">Experience</a>
+                <a href="#skills" class="text-gray-300 hover:text-white transition duration-300">Skills</a>
+                <a href="#projects" class="text-gray-300 hover:text-white transition duration-300">Projects</a>
+                <a href="#contact" class="text-gray-300 hover:text-white transition duration-300">Contact</a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 py-2">
+            <a href="#summary" class="block px-6 py-2 text-gray-300 hover:bg-gray-700">Summary</a>
+            <a href="#experience" class="block px-6 py-2 text-gray-300 hover:bg-gray-700">Experience</a>
+            <a href="#skills" class="block px-6 py-2 text-gray-300 hover:bg-gray-700">Skills</a>
+            <a href="#projects" class="block px-6 py-2 text-gray-300 hover:bg-gray-700">Projects</a>
+            <a href="#contact" class="block px-6 py-2 text-gray-300 hover:bg-gray-700">Contact</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 pt-24 pb-12">
+        <!-- Hero Section - Professional Headline -->
+        <section id="home" class="py-20 text-center">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">Sharan Chenna</h1>
+            <p class="text-lg sm:text-xl text-blue-400 max-w-2xl mx-auto mb-8">
+               > Site Reliability Engineer 
+               > Building Scalable and Resiliant Systems >
+            </p>
+            <a href="#contact" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">Download PDF</a>
+        </section>
+        
+        <!-- Professional Summary Section -->
+        <section id="summary" class="py-20">
+            <h2 class="section-title text-3xl font-bold text-white mb-6 text-center md:text-left">Professional Summary</h2>
+            <div class="max-w-4xl mx-auto">
+                <p class="text-gray-300 mb-4 leading-relaxed">
+                    Results-driven Site Reliability Engineer with 4 years of experience in managing large-scale distributed systems. Specializing in improving system reliability, implementing robust monitoring and alerting solutions, and automating operational tasks. Skilled in incident response, performance optimization, and fostering a culture of blameless postmortems.
+                </p>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-20">
+            <h2 class="section-title text-3xl font-bold text-white mb-12 text-center md:text-left">Work Experience</h2>
+            <div class="space-y-12 max-w-4xl mx-auto">
+                <!-- Job Entry 1 -->
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                        <h3 class="text-2xl font-semibold text-white">Cloud Operations Engineer</h3>
+                        <span class="text-blue-400 font-medium">Feb 2024 - Sep 2025</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Oracle Cloud Infrastructure</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li>Managed and scaled a provisioning API core to compute services, Improving reliability by over 15%</li>
+                        <li>Managed a fleet of 8000+ KVM Based Hypervisors end to end, Improved operational uptime by over 20%</li>
+                        <li>Automated routine tasks to reduce man hours by over 3 hours a week</li>
+                        <li>Designed and implemented a comprehensive observability stack using openTelemetry and Grafana.</li>
+                        <li>Worked closely with development teams and improve incident response processes, fostering a culture of reliability and continuous learning.</li>
+                        <li>Conducted RCA and blameless postmortems to avoid recurring issues</li>
+                        <li>Coordinate and document critical incidents to ensure rapid resolution and effective communication with stakeholders</li>
+                        <li>Optimized container images by using staged builds</li>
+                        <li>Used Terraform and Chef to automate patching across regions worldwide</li>
+                        <li>Devloped command line tools to ease Oncall Operations</li>
+                        <li>Manged CI/CD which are built on TeamCity</li>
+                        <li>Maintained software security by working closely with Dev team to ensure compliance</li>
+                    </ul>
+                </div>
+                <!-- Job Entry 2 -->
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                        <h3 class="text-2xl font-semibold text-white">Associate Engineer - LinuxOps</h3>
+                        <span class="text-blue-400 font-medium">Apr 2021 - Dec 2023</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">CtrlS Datacenters</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li>Maintained and monitored private cloud infrastructure onpremises, ensuring 99.9% uptime.</li>
+                        <li>Developed scripts to automate routine tasks, saving over 10 hours of manual work per week.</li>
+                        <li>Contributed to on-call rotation and performed root cause analysis for production incidents.</li>
+                        <li>Setup Ansible automation pipelines for various enterprise clients</li>
+                        <li>Developed a monitoring dashboards using Zabbix agents</li>
+                        <li>Worked on VMware for provisioning of VMs</li>
+                        <li>Worked on SOC to Implement IAM</li>
+                        <li>Worked with LVM, NFS, Samba and CIFS</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        
+         
+
+        <section id="skills" class="py-20">
+  <h2 class="section-title text-3xl font-bold text-white mb-12 text-center md:text-left">Skills</h2>
+  <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+    <!-- Infrastructure Automation -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-xl">
+      <h3 class="text-xl font-semibold text-blue-400 mb-3">Infrastructure Automation</h3>
+      <ul class="list-none space-y-2 text-gray-300">
+        <li>Terraform, Ansible, Chef</li>
+        <li>Docker, Kubernetes, OCI Build</li>
+        <li>AWS CLI, OCI, GitLab CI/CD</li>
+        <li>TeamCity, Jenkins (CI/CD pipelines)</li>
+      </ul>
+    </div>
+
+    <!-- Observability & Monitoring -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-xl">
+      <h3 class="text-xl font-semibold text-blue-400 mb-3">Observability & Monitoring</h3>
+      <ul class="list-none space-y-2 text-gray-300">
+        <li>Prometheus, Grafana, Alertmanager</li>
+        <li>OpenTelemetry, Blackbox Exporter</li>
+        <li>Zabbix, Node Exporter</li>
+        <li>Log analysis, RCA tooling</li>
+      </ul>
+    </div>
+
+    <!-- Scripting & Ops Engineering -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-xl">
+      <h3 class="text-xl font-semibold text-blue-400 mb-3">Scripting & Ops Engineering</h3>
+      <ul class="list-none space-y-2 text-gray-300">
+        <li>Python, Bash, SaltStack</li>
+        <li>Disk usage analysis, batch ops</li>
+        <li>Custom CLI tooling for on-call</li>
+        <li>Incident coordination & postmortems</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+        <!-- Projects Section -->
+        <section id="projects" class="py-20">
+            <h2 class="section-title text-3xl font-bold text-white mb-12 text-center">Stuff I Do</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+                <!-- Project Card 1 -->
+                <div class="bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/1F2937/F3F4F6?text=Project+1" alt="Project 1 Thumbnail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Project Title One</h3>
+                        <p class="text-gray-400 mb-4">A brief description of your project. Talk about the technologies used and what problem it solves.</p>
+                        <a href="#" class="inline-block text-blue-400 hover:text-blue-300 font-medium transition-colors duration-300">View Project &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/1F2937/F3F4F6?text=Project+2" alt="Project 2 Thumbnail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Project Title Two</h3>
+                        <p class="text-gray-400 mb-4">A brief description of your project. Talk about the technologies used and what problem it solves.</p>
+                        <a href="#" class="inline-block text-blue-400 hover:text-blue-300 font-medium transition-colors duration-300">View Project &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Project Card 3 -->
+                <div class="bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://placehold.co/600x400/1F2937/F3F4F6?text=Project+3" alt="Project 3 Thumbnail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Project Title Three</h3>
+                        <p class="text-gray-400 mb-4">A brief description of your project. Talk about the technologies used and what problem it solves.</p>
+                        <a href="#" class="inline-block text-blue-400 hover:text-blue-300 font-medium transition-colors duration-300">View Project &rarr;</a>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 text-center">
+            <h2 class="section-title text-3xl font-bold text-white mb-6 mx-auto">Get In Touch</h2>
+            <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+                I'm currently open to new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
+            </p>
+            <a href="mailto:your.email@example.com" class="inline-block bg-white text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105 hover:bg-gray-200">
+                Say Hello
+            </a>
+            <div class="mt-8 space-x-4">
+                <!-- Replace the href with your actual social media profiles -->
+                <a href="https://www.linkedin.com/in/sharanchenna/" class="text-blue-400 hover:text-blue-300 transition duration-300">LinkedIn</a>
+                <a href="#" class="text-blue-400 hover:text-blue-300 transition duration-300">GitHub</a>
+                <a href="#" class="text-blue-400 hover:text-blue-300 transition duration-300">Twitter</a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-center text-gray-400 py-6">
+        <p>Seeya! </p>
+    </footer>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
