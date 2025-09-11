@@ -79,9 +79,10 @@
                         </p>
                         <pre class="bg-gray-800 p-4 rounded-md overflow-x-auto text-sm"><code>sharan@sre:~$ https://github.com/sharanch/monitoring-stack.git
 sharan@sre:~$ cd monitoring-stack
-sharan@sre:~$ terraform init
+sharan@sre:~$ cd terraform
 sharan@sre:~$ terraform apply
-sharan@sre:~$ ansible-playbook playbook.yml</code></pre>
+sharan@sre:~$ ansible-playbook -i aws_ec2.yml play-to-docker.yml
+                        </code></pre>
                     </div>
                 </section>
                 <footer class="py-4">
