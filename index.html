@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharan's digital Resume</title>
+    <title>My Digital Resume</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font - Fira Code -->
@@ -29,6 +29,7 @@
             padding: 0 8px;
             border-top-left-radius: 0.5rem;
             border-top-right-radius: 0.5rem;
+            justify-content: flex-start;
         }
         .terminal-button {
             width: 12px;
@@ -39,6 +40,44 @@
         .close-btn { background-color: #ff5f56; }
         .minimize-btn { background-color: #ffbd2e; }
         .maximize-btn { background-color: #27c93f; }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        body.light-mode .terminal-window {
+            background-color: #e0e0e0;
+            border-color: #ccc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        body.light-mode .terminal-header {
+            background-color: #ccc;
+        }
+        body.light-mode .text-green-500 {
+            color: #166534; /* Darker green for contrast */
+        }
+        body.light-mode .text-white {
+            color: #1a1a1a;
+        }
+        body.light-mode .text-green-400 {
+            color: #4b5563;
+        }
+        body.light-mode .text-blue-400 {
+            color: #2563eb;
+        }
+        body.light-mode .bg-gray-800 {
+            background-color: #d1d5db;
+        }
+        body.light-mode .text-gray-400 {
+            color: #6b7280;
+        }
+        body.light-mode .text-gray-500 {
+            color: #4b5563;
+        }
+        body.light-mode hr {
+            border-color: #9ca3af;
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -50,23 +89,34 @@
                 <div class="terminal-button close-btn"></div>
                 <div class="terminal-button minimize-btn"></div>
                 <div class="terminal-button maximize-btn"></div>
+                <div class="flex-grow"></div> <!-- Spacer to push toggle button to the right -->
+                <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none">
+                    <!-- New Moon Icon for Dark Mode -->
+                    <svg id="moon-icon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path d="M21 12.79A9 9 0 1111.21 3.21a9 9 0 009.79 9.58z"></path>
+                    </svg>
+                    <!-- New Sun Icon for Light Mode -->
+                    <svg id="sun-icon" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM12 4v2m0 12v2m8-8h2m-2-4h2M4 12H2m4 4h-2m14-8h-2"/>
+                    </svg>
+                </button>
             </div>
 
             <div class="p-6">
                 <!-- Hero Section - Professional Headline -->
                 <section id="home" class="py-8">
-                    <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <span class="text-white">whoami</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">whoami</span>
                     <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2 mt-4">Sharan Chenna</h1>
-                    <span class="text-sm sm:text-lg text-green-400">Site Reliability Engineer &gt; Building Scalable and Resilient Systems</span>
+                    <span class="text-sm sm:text-lg text-green-400">Site Reliability Engineer</span>
                     <p class="text-xs sm:text-sm mt-4">
-                        <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <a href="resume.pdf" class="inline-block text-blue-400 hover:text-blue-300 transition duration-300">curl -s -O https://sharanch.dev/resume.pdf</a>
+                        <span class="text-green-500 font-bold">sharan@sre:~$</span> <a href="resume.pdf" class="inline-block text-blue-400 hover:text-blue-300 transition duration-300">curl -s -O https://www.sharanch.dev/resume.pdf</a>
                     </p>
                 </section>
                 
                 <!-- Professional Summary Section -->
                 <section id="summary" class="py-8">
                     <hr class="border-gray-700 my-4">
-                    <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <span class="text-white">cat summary.txt</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">cat summary.txt</span>
                     <div class="max-w-4xl mt-4">
                         <p class="leading-relaxed">
                             Results-driven Site Reliability Engineer with 4 years of experience in managing large-scale distributed systems. Specializing in improving system reliability, implementing robust monitoring and alerting solutions, and automating operational tasks. Skilled in incident response, performance optimization, and fostering a culture of blameless postmortems.
@@ -77,7 +127,7 @@
                 <!-- Experience Section -->
                 <section id="experience" class="py-8">
                     <hr class="border-gray-700 my-4">
-                    <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <span class="text-white">ls -l work-experience</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">ls -l work-experience</span>
                     <div class="space-y-6 max-w-4xl mt-4">
                         <!-- Job Entry 1 -->
                         <div class="bg-gray-800 p-6 rounded-lg shadow-xl">
@@ -119,7 +169,7 @@
                 <!-- Skills Section -->
                 <section id="skills" class="py-8">
                     <hr class="border-gray-700 my-4">
-                    <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <span class="text-white">cat skills.txt</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">cat skills.txt</span>
                     <div class="max-w-4xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
                         <!-- Infrastructure Automation -->
                         <div class="bg-gray-800 p-4 rounded-lg shadow-xl">
@@ -154,12 +204,12 @@
                     </div>
                 </section>
                 
-                <!-- Projects Section
+                <!-- Projects Section 
                 <section id="projects" class="py-8">
                     <hr class="border-gray-700 my-4">
-                    <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <span class="text-white">ls -l projects/</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">ls -l projects/</span>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                        
+                       
                         <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
                             <img src="https://placehold.co/600x400/1F2937/F3F4F6?text=Project+1" alt="Project 1 Thumbnail" class="w-full h-36 object-cover">
                             <div class="p-4">
@@ -171,7 +221,7 @@
                             </div>
                         </div>
 
-                       
+                        
                         <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
                             <img src="https://placehold.co/600x400/1F2937/F3F4F6?text=Project+2" alt="Project 2 Thumbnail" class="w-full h-36 object-cover">
                             <div class="p-4">
@@ -196,12 +246,12 @@
                         </div>
                     </div>
                 </section>
-             -->
-                
+                -->
+
                 <!-- Contact Section -->
                 <section id="contact" class="py-8 text-center">
                     <hr class="border-gray-700 my-4">
-                    <span class="text-green-500 font-bold">user@sharan-pc:~$</span> <span class="text-white">contact --me</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">contact --me</span>
                     <p class="mt-4 max-w-2xl mx-auto">
                         I'm currently open to new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
                     </p>
@@ -211,12 +261,12 @@
                     <div class="mt-4 space-x-4">
                         <a href="https://www.linkedin.com/in/sharanchenna/" class="text-blue-400 hover:text-blue-300 transition duration-300">linkedin</a>
                         <a href="https://github.com/sharanch" class="text-blue-400 hover:text-blue-300 transition duration-300">github</a>
-                        <a href="#" class="text-blue-400 hover:text-blue-300 transition duration-300">twitter</a>
+                       <!-- <a href="#" class="text-blue-400 hover:text-blue-300 transition duration-300">twitter</a> -->
                     </div>
                 </section>
 
                 <footer class="text-center text-gray-500 py-4">
-                    <p>sharan@sharan-pc:~$ <span class="text-gray-400">exit</span></p>
+                    <p>sharan@sre:~$ <span class="text-gray-400">exit</span></p>
                 </footer>
             </div>
         </div>
@@ -225,10 +275,29 @@
     <script>
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
 
         if (mobileMenuButton && mobileMenu) {
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                
+                // Toggle icon visibility
+                if (body.classList.contains('light-mode')) {
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                } else {
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                }
             });
         }
     </script>
