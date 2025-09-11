@@ -86,7 +86,8 @@
 <body class="bg-gray-950 text-green-300 w-screen h-screen overflow-hidden">
 
     <!-- Updated main container to take up the full viewport and center the terminal -->
-    <main class="w-screen h-screen p-4 sm:p-8 flex items-center justify-center">
+    <!-- The p-0 sm:p-8 ensures full-width on mobile but keeps padding on larger screens -->
+    <main class="w-screen h-screen p-0 sm:p-8 flex items-center justify-center">
         <!-- The terminal window now has flex-col to manage its children -->
         <div class="terminal-window rounded-xl max-w-5xl w-full h-full flex flex-col transition-all duration-300 hover:shadow-2xl">
             <div class="terminal-header flex-shrink-0">
@@ -107,7 +108,8 @@
             </div>
 
             <!-- The content div now handles scrolling internally -->
-            <div class="p-6 flex-grow overflow-y-auto">
+            <!-- The p-4 sm:p-6 makes the content's padding more subtle on mobile -->
+            <div class="p-4 sm:p-6 flex-grow overflow-y-auto">
                 <!-- Hero Section - Professional Headline -->
                 <section id="home" class="py-8">
                     <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">whoami</span>
