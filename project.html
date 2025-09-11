@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details: Automated Monitoring Stack</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font - Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fira Code', monospace;
+            scroll-behavior: smooth;
+        }
+        .terminal-window {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+        }
+        .terminal-header {
+            background-color: #333;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            border-radius: 0.5rem;
+            justify-content: flex-start;
+        }
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .close-btn { background-color: #ff5f56; }
+        .minimize-btn { background-color: #ffbd2e; }
+        .maximize-btn { background-color: #27c93f; }
+    </style>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body class="bg-gray-950 text-green-300 w-screen h-screen overflow-hidden">
+    <main class="w-screen h-screen p-0 sm:p-8 flex items-center justify-center">
+        <div class="terminal-window rounded-xl max-w-5xl w-full h-full flex flex-col transition-all duration-300 hover:shadow-2xl">
+            <div class="terminal-header flex-shrink-0">
+                <div class="terminal-button close-btn"></div>
+                <div class="terminal-button minimize-btn"></div>
+                <div class="terminal-button maximize-btn"></div>
+            </div>
+            <div class="p-4 sm:p-6 flex-grow overflow-y-auto">
+                <section class="py-4">
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">cat projects/automated-monitoring-stack</span>
+                    <div class="max-w-4xl mt-4">
+                        <h2 class="text-2xl font-bold mb-2">Automated Monitoring Stack - Deployment</h2>
+                        <h3 class="text-lg font-semibold text-white mb-2">Overview</h3>
+                        <p class="leading-relaxed mb-4">
+                            This project is a Proof of Concept (PoC) for deploying a full-featured observability stack on AWS. The solution leverages <strong class="text-blue-400">Terraform</strong> for infrastructure provisioning, <strong class="text-blue-400">Ansible</strong> for configuration management, and <strong class="text-blue-400">Docker</strong> for containerization of the monitoring tools.
+                        </p>
+                        <h3 class="text-lg font-semibold text-white mb-2">Key Components</h3>
+                        <ul class="list-none space-y-2 mb-4">
+                            <li>> <strong class="text-white">Infrastructure:</strong> AWS EC2 instance.</li>
+                            <li>> <strong class="text-white">Provisioning:</strong> Terraform for IaC (Infrastructure as Code).</li>
+                            <li>> <strong class="text-white">Configuration:</strong> Ansible playbooks for automated setup of monitoring tools.</li>
+                            <li>> <strong class="text-white">Monitoring Tools:</strong> Prometheus, Grafana, and Node Exporter.</li>
+                        </ul>
+                        <h3 class="text-lg font-semibold text-white mb-2">Features</h3>
+                        <ul class="list-none space-y-2 mb-4">
+                            <li>> Automated Deployment with a single command.</li>
+                            <li>> Containerized Services for portability and easy management.</li>
+                            <li>> Centralized Monitoring for key metrics.</li>
+                            <li>> Extensible to add more exporters or targets.</li>
+                        </ul>
+                        <h3 class="text-lg font-semibold text-white mb-2">Getting Started</h3>
+                        <p class="leading-relaxed mb-4">
+                            To get this stack up and running, follow these steps:
+                        </p>
+                        <pre class="bg-gray-800 p-4 rounded-md overflow-x-auto text-sm"><code>sharan@sre:~$ git clone https://github.com/sharanch/multi-cloud-dr.git
+sharan@sre:~$ cd multi-cloud-dr
+sharan@sre:~$ terraform init
+sharan@sre:~$ terraform apply
+sharan@sre:~$ ansible-playbook playbook.yml</code></pre>
+                    </div>
+                </section>
+                <footer class="py-4">
+                    <p>sharan@sre:~$ <a href="index.html" class="text-blue-400 hover:text-blue-300 transition duration-300">cd ..</a></p>
+                </footer>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
