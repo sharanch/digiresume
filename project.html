@@ -39,6 +39,44 @@
         .close-btn { background-color: #ff5f56; }
         .minimize-btn { background-color: #ffbd2e; }
         .maximize-btn { background-color: #27c93f; }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        body.light-mode .terminal-window {
+            background-color: #e0e0e0;
+            border-color: #ccc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        body.light-mode .terminal-header {
+            background-color: #ccc;
+        }
+        body.light-mode .text-green-500 {
+            color: #166534; /* Darker green for contrast */
+        }
+        body.light-mode .text-white {
+            color: #1a1a1a;
+        }
+        body.light-mode .text-green-400 {
+            color: #4b5563;
+        }
+        body.light-mode .text-blue-400 {
+            color: #2563eb;
+        }
+        body.light-mode .bg-gray-800 {
+            background-color: #d1d5db;
+        }
+        body.light-mode .text-gray-400 {
+            color: #6b7280;
+        }
+        body.light-mode .text-gray-500 {
+            color: #4b5563;
+        }
+        body.light-mode hr {
+            border-color: #9ca3af;
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -49,6 +87,17 @@
                 <div class="terminal-button close-btn"></div>
                 <div class="terminal-button minimize-btn"></div>
                 <div class="terminal-button maximize-btn"></div>
+                <div class="flex-grow"></div> <!-- Spacer to push toggle button to the right -->
+                <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none">
+                    <!-- Moon Icon for Dark Mode -->
+                    <svg id="moon-icon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path d="M21 12.79A9 9 0 1111.21 3.21a9 9 0 009.79 9.58z"></path>
+                    </svg>
+                    <!-- Sun Icon for Light Mode -->
+                    <svg id="sun-icon" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM12 4v2m0 12v2m8-8h2m-2-4h2M4 12H2m4 4h-2m14-8h-2"/>
+                    </svg>
+                </button>
             </div>
             <div class="p-4 sm:p-6 flex-grow overflow-y-auto">
                 <section class="py-4">
@@ -77,13 +126,14 @@
                         <p class="leading-relaxed mb-4">
                             To get this stack up and running, follow these steps:
                         </p>
-                        <pre class="bg-gray-800 p-4 rounded-md overflow-x-auto text-sm"><code>sharan@sre:~$ https://github.com/sharanch/monitoring-stack.git
+                         <pre class="bg-gray-800 p-4 rounded-md overflow-x-auto text-sm"><code>sharan@sre:~$ https://github.com/sharanch/monitoring-stack.git
 sharan@sre:~$ cd monitoring-stack
 sharan@sre:~$ cd ..        
 sharan@sre:~$ cd terraform
 sharan@sre:~$ terraform apply
 sharan@sre:~$ ansible-playbook -i aws_ec2.yml play-to-docker.yml
                         </code></pre>
+                    </div>
                     </div>
                 </section>
                 <footer class="py-4">
@@ -92,5 +142,26 @@ sharan@sre:~$ ansible-playbook -i aws_ec2.yml play-to-docker.yml
             </div>
         </div>
     </main>
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                
+                // Toggle icon visibility
+                if (body.classList.contains('light-mode')) {
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                } else {
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
