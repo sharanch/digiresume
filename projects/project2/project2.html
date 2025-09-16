@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Details: Automated Monitoring Stack</title>
+    <title>Project Details: Jenkins CICD</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font - Fira Code -->
@@ -100,19 +100,18 @@
             </div>
             <div class="p-4 sm:p-6 flex-grow overflow-y-auto">
                 <section class="py-4">
-                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">cat projects/automated-monitoring-stack</span>
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">cat projects/Jenkins_CICD</span>
                     <div class="max-w-4xl mt-4">
-                        <h2 class="text-2xl font-bold mb-2">Automated Monitoring Stack - Deployment</h2>
+                        <h2 class="text-2xl font-bold mb-2">Jenkins CICD Pipeline</h2>
                         <h3 class="text-lg font-semibold text-white mb-2">Overview</h3>
                         <p class="leading-relaxed mb-4">
-                            This project is a Proof of Concept (PoC) for deploying a full-featured observability stack on AWS. The solution leverages <strong class="text-blue-400">Terraform</strong> for infrastructure provisioning, <strong class="text-blue-400">Ansible</strong> for configuration management, and <strong class="text-blue-400">Docker</strong> for containerization of the monitoring tools.
+                            This project is a Proof of Concept (PoC) for deploying a Jenkins CICD Pipeline using GitHub Webhooks as build triggers on AWS, The solution leverages <strong class="text-blue-400">Jenkins Build Pipeline Groovry Scripting</strong> for automating application build/deployment, <strong class="text-blue-400">GitHub Webhooks</strong> for build triggers, and <strong class="text-blue-400">Docker</strong> for containerization of a ToDo application
                         </p>
                         <h3 class="text-lg font-semibold text-white mb-2">Key Components</h3>
                         <ul class="list-none space-y-2 mb-4">
-                            <li>> <strong class="text-white">Infrastructure:</strong> AWS EC2 instance.</li>
-                            <li>> <strong class="text-white">Provisioning:</strong> Terraform for IaC (Infrastructure as Code).</li>
+                            <li>> <strong class="text-white">CICD:</strong> Jenkins CICD Pipeline</li>
+                            <li>> <strong class="text-white">Infrastructure:</strong> AWS EC2 instance (t3.micro) and Docker Containers</li>
                             <li>> <strong class="text-white">Configuration:</strong> Ansible playbooks for automated setup of monitoring tools.</li>
-                            <li>> <strong class="text-white">Monitoring Tools:</strong> Prometheus, Grafana, and Node Exporter.</li>
                         </ul>
                         <h3 class="text-lg font-semibold text-white mb-2">Features</h3>
                         <ul class="list-none space-y-2 mb-4">
