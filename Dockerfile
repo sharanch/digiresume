@@ -1,5 +1,5 @@
 # Use the lightweight Nginx Alpine image
-FROM nginx:alpine
+FROM docker.io/library/nginx:alpine
 
 # Remove the default Nginx static assets
 RUN rm -rf /usr/share/nginx/html/*
