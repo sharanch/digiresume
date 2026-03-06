@@ -2,3 +2,6 @@
 Dockerfile
 node_modules
 .DS_Store
+deployment.yaml
+ingress.yaml
+README.md
