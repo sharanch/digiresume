@@ -5,7 +5,7 @@ DigiResume is a modern, containerized digital portfolio and resume showcase. It 
 
 This project isn't just a static resume; it's a demonstration of a full DevOps lifecycle. Built with a clean HTML/CSS frontend, it is fully containerized and ready for cloud-native deployment.
 
-    Live Demo: sharan.ch (Replace with your CNAME link)
+    Live Demo: sharanch.dev
 
     Core Focus: High availability, performance, and clean documentation.
 
@@ -68,7 +68,7 @@ I am a Site Reliability Engineer passionate about building scalable infrastructu
 
     Experience: 4+ Years in DevOps/SRE
 
-    Location: India 🇮🇳
+    Location: India 
 
     Tech Interests: K8s, Python, Local LLMs, and Linux.
 
