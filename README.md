@@ -47,12 +47,6 @@ If you want to view the resume locally using the containerized setup:
 
     Visit http://localhost:8080 in your browser.
 
-Deploy to Kubernetes
-
-The repository includes a deployment.yaml for scaling the resume in a K8s cluster:
-Bash
-
-kubectl apply -f deployment.yaml
 
 ✍️ Content Sections
 
