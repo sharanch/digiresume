@@ -210,7 +210,7 @@ ensuring 95%+ adherence to SLAs for all critical service requests</li>
                         <div class="bg-gray-800 p-4 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
                             <h3 class="text-base font-semibold text-blue-400 mb-2">Infrastructure Automation</h3>
                             <ul class="list-none space-y-1 text-sm">
-                                <li>> Terraform, Ansible</li>
+                                <li>> Terraform, Ansible, Chef</li>
 <li>> Docker, Kubernetes, Helm, ArgoCD</li>
 <li>> GitHub Actions, GitLab CI/CD, Jenkins</li>
 <li>> AWS, OCI, minikube</li>
@@ -242,39 +242,60 @@ ensuring 95%+ adherence to SLAs for all critical service requests</li>
                 </section>
                 
                 <!-- Projects Section -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                <section id="projects" class="py-8">
+                    <hr class="border-gray-700 my-4">
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">ls -l projects/</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        
+                        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-white mb-1">go-sre-observatory</h3>
+                                <p class="text-gray-400 text-xs mb-2">
+                                    Production-grade observability stack on Kubernetes — Go HTTP server instrumented with Prometheus RED metrics, Grafana dashboards, Loki log aggregation, and Alertmanager Slack routing. Load generator keeps dashboards live.
+                                </p>
+                                <a href="https://github.com/sharanch/go-sre-observatory"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                            </div>
+                        </div>
 
-  <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
-    <div class="p-4">
-      <h3 class="text-lg font-semibold text-white mb-1">go-sre-observatory</h3>
-      <p class="text-gray-400 text-xs mb-2">
-        Production-grade observability stack on Kubernetes — Go HTTP server instrumented with Prometheus RED metrics, Grafana dashboards, Loki log aggregation, and Alertmanager Slack routing. Load generator keeps dashboards live.
+                
+                        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-white mb-1">chatops - gitops</h3>
+                                <p class="text-gray-400 text-xs mb-2">
+                                    3-tier real-time chat app with a full GitOps pipeline — React frontend, Node.js backend, PostgreSQL, Redis pub/sub. GitHub Actions builds and pushes images, ArgoCD syncs Helm charts to Kubernetes. Zero manual deploys.</p>
+                                </p>
+                                <a href="https://github.com/sharanch/chatops"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-white mb-1">resilient-data-poc</h3>
+                                <p class="text-gray-400 text-xs mb-2">
+                                    Automated chaos engineering for a CloudNativePG PostgreSQL cluster — kills the primary pod, measures failover time to the millisecond, and verifies data integrity on the newly elected primary.
       </p>
-      <a href="https://github.com/sharanch/go-sre-observatory" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
-    </div>
-  </div>
+                                </p>
+                                <a href="https://github.com/sharanch/resilient-data-poc"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                            </div>
+                        </div>
 
-  <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
-    <div class="p-4">
-      <h3 class="text-lg font-semibold text-white mb-1">chatops</h3>
-      <p class="text-gray-400 text-xs mb-2">
-        3-tier real-time chat app with a full GitOps pipeline — React frontend, Node.js backend, PostgreSQL, Redis pub/sub. GitHub Actions builds and pushes images, ArgoCD syncs Helm charts to Kubernetes. Zero manual deploys.
-      </p>
-      <a href="https://github.com/sharanch/chatops" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
-    </div>
-  </div>
+                        
 
-  <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
-    <div class="p-4">
-      <h3 class="text-lg font-semibold text-white mb-1">resilient-data-poc</h3>
-      <p class="text-gray-400 text-xs mb-2">
-        Automated chaos engineering for a CloudNativePG PostgreSQL cluster — kills the primary pod, measures failover time to the millisecond, and verifies data integrity on the newly elected primary.
-      </p>
-      <a href="https://github.com/sharanch/resilient-data-poc" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
-    </div>
-  </div>
+                        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-white mb-1">Blogposts</h3>
+                                <p class="text-gray-400 text-xs mb-2">
+                                    Anecdotes from my work/study, Coming soooooooooon!
+                                </p>
+                                <a href="blogs/blog-list.html"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                            </div>
+                        </div>
 
-</div>
+                        
+                        
+                       
+                    </div>
+                </section>
                 
 
                 <!-- Contact Section -->
