@@ -12,11 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            /* Reverted to Fira Code */
             font-family: 'Fira Code', monospace;
             scroll-behavior: smooth;
         }
-        /* Adjusted the main terminal to take up the full viewport */
         .terminal-window {
             background-color: #1a1a1a;
             border: 1px solid #333;
@@ -29,7 +27,6 @@
             display: flex;
             align-items: center;
             padding: 0 8px;
-            /* Changed from top-only to all-around border-radius */
             border-radius: 0.5rem;
             justify-content: flex-start;
         }
@@ -57,7 +54,7 @@
             background-color: #ccc;
         }
         body.light-mode .text-green-500 {
-            color: #166534; /* Darker green for contrast */
+            color: #166534;
         }
         body.light-mode .text-white {
             color: #1a1a1a;
@@ -85,32 +82,25 @@
 </head>
 <body class="bg-gray-950 text-green-300 w-screen h-screen overflow-hidden">
 
-    <!-- Updated main container to take up the full viewport and center the terminal -->
-    <!-- The p-0 sm:p-8 ensures full-width on mobile but keeps padding on larger screens -->
     <main class="w-screen h-screen p-0 sm:p-8 flex items-center justify-center">
-        <!-- The terminal window now has flex-col to manage its children -->
         <div class="terminal-window rounded-xl max-w-5xl w-full h-full flex flex-col transition-all duration-300 hover:shadow-2xl">
             <div class="terminal-header flex-shrink-0">
                 <div class="terminal-button close-btn"></div>
                 <div class="terminal-button minimize-btn"></div>
                 <div class="terminal-button maximize-btn"></div>
-                <div class="flex-grow"></div> <!-- Spacer to push toggle button to the right -->
+                <div class="flex-grow"></div>
                 <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none">
-                    <!-- New Moon Icon for Dark Mode -->
                     <svg id="moon-icon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
                         <path d="M21 12.79A9 9 0 1111.21 3.21a9 9 0 009.79 9.58z"></path>
                     </svg>
-                    <!-- New Sun Icon for Light Mode -->
                     <svg id="sun-icon" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM12 4v2m0 12v2m8-8h2m-2-4h2M4 12H2m4 4h-2m14-8h-2"/>
                     </svg>
                 </button>
             </div>
 
-            <!-- The content div now handles scrolling internally -->
-            <!-- The p-4 sm:p-6 makes the content's padding more subtle on mobile -->
             <div class="p-4 sm:p-6 flex-grow overflow-y-auto">
-                <!-- Hero Section - Professional Headline -->
+                <!-- Hero Section -->
                 <section id="home" class="py-8">
                     <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">whoami</span>
                     <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2 mt-4">Sharan Chenna</h1>
@@ -139,8 +129,6 @@
                     <hr class="border-gray-700 my-4">
                     <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">ls -l work-experience</span>
                     <div class="space-y-6 max-w-4xl mt-4">
-                        <!-- Job Entry 1 -->
-                        <!-- Added transform and hover effects -->
                         <div class="bg-gray-800 p-6 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
                             <h3 class="text-xl font-semibold text-white mb-1">Cloud Operations Engineer | OCI Compute (Control & Data Plane) </h3>
                             <p class="text-sm text-green-400 mb-2">Oracle (<span class="text-gray-400">Feb 2024 - Sep 2025</span>)</p>
@@ -154,8 +142,6 @@
                                 <li>> Executive Communication: Acted as the technical point of contact during high-severity (P0) events, providing concise incident status updates and technical impact assessments to VP-level stakeholders.</li> 
                             </ul>
                         </div>
-                        <!-- Job Entry 2 -->
-                        <!-- Added transform and hover effects -->
                         <div class="bg-gray-800 p-6 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
                             <h3 class="text-xl font-semibold text-white mb-1">Associate Engineer | Linux COE</h3>
                             <p class="text-sm text-green-400 mb-2">CtrlS Datacenters (<span class="text-gray-400">Apr 2021 - Dec 2023</span>)</p>
@@ -178,37 +164,31 @@
                     <hr class="border-gray-700 my-4">
                     <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">cat skills.txt</span>
                     <div class="max-w-4xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-                        <!-- Infrastructure Automation -->
-                        <!-- Added transform and hover effects -->
                         <div class="bg-gray-800 p-4 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
                             <h3 class="text-base font-semibold text-blue-400 mb-2">Infrastructure Automation</h3>
                             <ul class="list-none space-y-1 text-sm">
                                 <li>> Terraform, Ansible, Chef</li>
-<li>> Docker, Kubernetes, Helm, ArgoCD</li>
-<li>> GitHub Actions, GitLab CI/CD, Jenkins</li>
-<li>> AWS, OCI, minikube</li>
+                                <li>> Docker, Kubernetes, Helm, ArgoCD</li>
+                                <li>> GitHub Actions, GitLab CI/CD, Jenkins</li>
+                                <li>> AWS, OCI, minikube</li>
                             </ul>
                         </div>
-                        <!-- Observability & Monitoring -->
-                        <!-- Added transform and hover effects -->
                         <div class="bg-gray-800 p-4 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
                             <h3 class="text-base font-semibold text-blue-400 mb-2">Observability & Monitoring</h3>
                             <ul class="list-none space-y-1 text-sm">
                                 <li>> Prometheus, Grafana, Alertmanager</li>
-<li>> Loki, Promtail, Node Exporter</li>
-<li>> OpenTelemetry, Blackbox Exporter</li>
-<li>> Zabbix, CloudNativePG monitoring</li>
+                                <li>> Loki, Promtail, Node Exporter</li>
+                                <li>> OpenTelemetry, Blackbox Exporter</li>
+                                <li>> Zabbix, CloudNativePG monitoring</li>
                             </ul>
                         </div>
-                        <!-- Scripting & Ops Engineering -->
-                        <!-- Added transform and hover effects -->
                         <div class="bg-gray-800 p-4 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
                             <h3 class="text-base font-semibold text-blue-400 mb-2">Scripting & Ops Engineering</h3>
                             <ul class="list-none space-y-1 text-sm">
                                 <li>> Go, Python, Bash</li>
-<li>> SaltStack, SRE runbook automation</li>
-<li>> Chaos engineering, failover testing</li>
-<li>> Incident coordination & postmortems</li>
+                                <li>> SaltStack, SRE runbook automation</li>
+                                <li>> Chaos engineering, failover testing</li>
+                                <li>> Incident coordination & postmortems</li>
                             </ul>
                         </div>
                     </div>
@@ -226,16 +206,15 @@
                                 <p class="text-gray-400 text-xs mb-2">
                                     Production-grade observability stack on Kubernetes — Go HTTP server instrumented with Prometheus RED metrics, Grafana dashboards, Loki log aggregation, and Alertmanager Slack routing. Load generator keeps dashboards live.
                                 </p>
-                                <a href="https://github.com/sharanch/go-sre-observatory" target="_blank"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                                <a href="https://github.com/sharanch/go-sre-observatory" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
                             </div>
                         </div>
 
-                
                         <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
                             <div class="p-4">
                                 <h3 class="text-lg font-semibold text-white mb-1">chatops - gitops</h3>
                                 <p class="text-gray-400 text-xs mb-2">
-                                    3-tier real-time chat app with a full GitOps pipeline — React frontend, Node.js backend, PostgreSQL, Redis pub/sub. GitHub Actions builds and pushes images, ArgoCD syncs Helm charts to Kubernetes. Zero manual deploys.</p>
+                                    3-tier real-time chat app with a full GitOps pipeline — React frontend, Node.js backend, PostgreSQL, Redis pub/sub. GitHub Actions builds and pushes images, ArgoCD syncs Helm charts to Kubernetes. Zero manual deploys.
                                 </p>
                                 <a href="https://github.com/sharanch/chatops" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
                             </div>
@@ -246,22 +225,19 @@
                                 <h3 class="text-lg font-semibold text-white mb-1">resilient-data-poc</h3>
                                 <p class="text-gray-400 text-xs mb-2">
                                     Automated chaos engineering for a CloudNativePG PostgreSQL cluster — kills the primary pod, measures failover time to the millisecond, and verifies data integrity on the newly elected primary.
-      </p>
                                 </p>
-                                <a href="https://github.com/sharanch/resilient-data-poc" target="_blank"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                                <a href="https://github.com/sharanch/resilient-data-poc" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
                             </div>
                         </div>
                         
-                         <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
                             <div class="p-4">
                                 <h3 class="text-lg font-semibold text-white mb-1">aws-security-best-practices</h3>
                                 <p class="text-gray-400 text-xs mb-2">
-                                    AWS security audit scripts, attack scenarios, and Terraform vulnerable/remediated environments covering IAM, EC2, S3, Lambda, RDS, and network security. 
-      </p>
+                                    AWS security audit scripts, attack scenarios, and Terraform vulnerable/remediated environments covering IAM, EC2, S3, Lambda, RDS, and network security.
                                 </p>
-                                <a href="https://github.com/sharanch/aws-security-best-practices" target="_blank"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
-                                <a href="https://aws-security-docs.sharanch.dev/" target="_blank"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view live link &rarr;</a>
-                                
+                                <a href="https://github.com/sharanch/aws-security-best-practices" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                                <a href="https://aws-security-docs.sharanch.dev/" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view live link &rarr;</a>
                             </div>
                         </div>
 
@@ -269,29 +245,34 @@
                             <div class="p-4">
                                 <h3 class="text-lg font-semibold text-white mb-1">AIOps Log-explainer</h3>
                                 <p class="text-gray-400 text-xs mb-2">
-                                    Built a privacy-first AIOps CLI tool that tails live log files and uses a local LLM (Ollama) to explain each line in plain English in real time, designed for on-call SREs needing fast situational awareness without exfiltrating sensitive log data to external services. Engineered a two-pass severity classifier, sliding-window pattern spike detection (5 errors/60s), and automated incident summarization (10 errors/120s) to reduce cognitive load during active incidents. Shipped as native Linux packages (.deb/.rpm) with a three-workflow GitHub Actions pipeline covering lint, pytest with 80%+ coverage gate, Docker image publishing to GHCR, and versioned GitHub Releases on semver tags.
-      </p>
+                                    Built a privacy-first AIOps CLI tool that tails live log files and uses a local LLM (Ollama) to explain each line in plain English in real time, designed for on-call SREs needing fast situational awareness without exfiltrating sensitive log data to external services. Engineered a two-pass severity classifier, sliding-window pattern spike detection (5 errors/60s), and automated incident summarization.
                                 </p>
-                                <a href="https://github.com/sharanch/log-explainer" target="_blank"  class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                                <a href="https://github.com/sharanch/log-explainer" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
                             </div>
                         </div>
-                        
 
-                        
-                        
-                       
+                        <!-- istio-mesh-demo — added -->
+                        <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-white mb-1">istio-mesh-demo</h3>
+                                <p class="text-gray-400 text-xs mb-2">
+                                    Production-grade Istio service mesh on Kubernetes — custom FastAPI microservices with mTLS STRICT, zero-trust AuthorizationPolicy, canary traffic splitting via VirtualService weights, fault injection, circuit breaker, retry policies, and distributed tracing with B3 header propagation. CI/CD pipeline auto-builds and pushes images to GHCR on tag, updating manifests via GitOps commit.
+                                </p>
+                                <a href="https://github.com/sharanch/istio-mesh-demo" target="_blank" class="inline-block text-blue-400 hover:text-blue-300 text-sm transition-colors duration-300">view &rarr;</a>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
                 
-
                 <!-- Contact Section -->
                 <section id="contact" class="py-8 text-center">
                     <hr class="border-gray-700 my-4">
-                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">ls social</span> <!-- Updated the prompt here -->
+                    <span class="text-green-500 font-bold">sharan@sre:~$</span> <span class="text-white">ls social</span>
                     <p class="mt-4 max-w-2xl mx-auto">
                         I'm currently open to new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
                     </p>
-                    <a href="mailto:me@sharanch.dev" class="inline-block bg-white text-gray-900 font-bold py-2 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105 mt-4">
+                    <a href="/cdn-cgi/l/email-protection#b7dad2f7c4dfd6c5d6d9d4df99d3d2c1" class="inline-block bg-white text-gray-900 font-bold py-2 px-6 rounded-full shadow-lg transition duration-300 transform hover:scale-105 mt-4">
                         Say Hello
                     </a>
                     <div class="mt-4 space-x-4">
@@ -308,6 +289,7 @@
         </div>
     </main>
 
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -325,8 +307,6 @@
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
                 body.classList.toggle('light-mode');
-                
-                // Toggle icon visibility
                 if (body.classList.contains('light-mode')) {
                     sunIcon.style.display = 'none';
                     moonIcon.style.display = 'block';
