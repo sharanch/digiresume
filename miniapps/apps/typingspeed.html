@@ -1,294 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Speed Tester</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      .terminal-window {
-        background-color: #1a1a1a;
-        border: 1px solid #333;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        padding: 0;
-        overflow: hidden;
-      }
-      .terminal-header {
-        background-color: #333;
-        height: 25px;
-        display: flex;
-        align-items: center;
-        padding: 0 8px;
-        justify-content: flex-start;
-      }
-      .terminal-button {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-      }
-      .close-btn { background-color: #ff5f56; }
-      .minimize-btn { background-color: #ffbd2e; }
-      .maximize-btn { background-color: #27c93f; }
-      .terminal-content {
-        padding: 1.5rem;
-      }
-      .typing-text-container {
-        min-height: 100px;
-      }
-      body.light-mode {
-        background-color: #f0f4f8;
-        color: #1a202c;
-      }
-      body.light-mode .terminal-window {
-        background-color: #e0e0e0;
-        border-color: #ccc;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      body.light-mode .terminal-header {
-        background-color: #ccc;
-      }
-      body.light-mode .text-green-400 {
-        color: #1a202c;
-      }
-      body.light-mode .border-green-600 {
-        border-color: #e2e8f0;
-      }
-      body.light-mode .bg-green-600 {
-        background-color: #4c51bf;
-      }
-      body.light-mode .hover\:bg-green-700:hover {
-        background-color: #434190;
-      }
-      body.light-mode .shadow-xl {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      }
-      .light-mode .hover\:bg-gray-700:hover {
-        background-color: #d1d5db;
-      }
-      body.light-mode .text-white {
-        color: #1a202c;
-      }
-      body.light-mode .bg-gray-800 {
-        background-color: #f0f4f8;
-      }
-    </style>
-</head>
-<body class="bg-gray-950 text-green-400 font-mono flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>typing-test — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <div class="terminal-window rounded-2xl w-full max-w-xl transition-colors duration-300">
-    
-    <div class="terminal-header flex-shrink-0 rounded-t-2xl">
-      <div class="terminal-button close-btn"></div>
-      <div class="terminal-button minimize-btn"></div>
-      <div class="terminal-button maximize-btn"></div>
-      <div class="flex-grow"></div>
-      <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none">
-          <!-- Sun Icon for Light Mode -->
-          <svg id="sun-icon" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: block;">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM12 4v2m0 12v2m8-8h2m-2-4h2M4 12H2m4 4h-2m14-8h-2"/>
-          </svg>
-          <!-- Moon Icon for Dark Mode -->
-          <svg id="moon-icon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-            <path d="M21 12.79A9 9 0 1111.21 3.21a9 9 0 009.79 9.58z"></path>
-          </svg>
-      </button>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --chrome: #252525;
+      --ink: #d4d4d4;
+      --dim: #555;
+      --bright: #f0f0f0;
+      --prompt: #3fb950;
+      --accent: #c8f53a;
+      --link: #58a6ff;
+      --correct: #3fb950;
+      --wrong: #f85149;
+      --font: 'Fira Code', monospace;
+    }
+
+    body.light {
+      --bg: #f0f0f0;
+      --surface: #e2e2e2;
+      --border: #ccc;
+      --chrome: #d0d0d0;
+      --ink: #2a2a2a;
+      --dim: #888;
+      --bright: #111;
+      --prompt: #1a7f37;
+      --accent: #5a8a00;
+      --link: #0969da;
+      --correct: #1a7f37;
+      --wrong: #cf222e;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      transition: background .2s, color .2s;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 560px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .titlebar {
+      background: var(--chrome);
+      border-bottom: 1px solid var(--border);
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 7px;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .dot.red    { background: #ff5f57; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green  { background: #27c93f; }
+
+    .titlebar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: .04em;
+      margin-left: -60px;
+    }
+
+    .toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: var(--font);
+      font-size: 10px;
+      color: var(--dim);
+      cursor: pointer;
+      letter-spacing: .06em;
+      transition: color .15s, border-color .15s;
+    }
+    .toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+    .body { padding: 1.75rem 2rem 1.5rem; }
+
+    .prompt { color: var(--prompt); font-weight: 700; }
+    .cmd    { color: var(--bright); }
+
+    .head { font-size: 13px; margin-bottom: 1.5rem; }
+
+    /* ── TEXT DISPLAY ── */
+    .text-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      font-size: 14px;
+      line-height: 1.9;
+      min-height: 80px;
+      letter-spacing: .02em;
+    }
+
+    .text-box .untyped { color: var(--dim); }
+    .text-box .correct { color: var(--correct); }
+    .text-box .wrong   { color: var(--wrong); }
+
+    /* ── INPUT ── */
+    .typing-input {
+      width: 100%;
+      font-family: var(--font);
+      font-size: 13px;
+      padding: .65rem .85rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--ink);
+      resize: none;
+      outline: none;
+      height: 72px;
+      margin-bottom: 1.25rem;
+      transition: border-color .15s;
+    }
+    .typing-input:focus { border-color: var(--accent); }
+    .typing-input::placeholder { color: var(--dim); }
+    .typing-input:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── RESULTS ── */
+    .results {
+      display: none;
+      gap: 1.5rem;
+      margin-bottom: 1.25rem;
+      padding: .75rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .results.show { display: flex; }
+
+    .stat { display: flex; flex-direction: column; gap: 3px; }
+    .stat-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .04em;
+    }
+    .stat-label {
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+
+    .btn {
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      padding: .55rem 1.1rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .85; }
+    .btn-start { background: var(--accent); color: #0a0a0a; }
+    .btn-new   { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+    .hidden    { display: none !important; }
+
+    /* ── FOOTER ── */
+    .foot {
+      font-size: 12px;
+      color: var(--dim);
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+    .foot a { color: var(--link); text-decoration: none; }
+    .foot a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="terminal" role="main">
+
+    <div class="titlebar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/typing-test</span>
+      <button class="toggle" id="toggle" aria-label="Toggle light/dark mode">light</button>
     </div>
 
-    <div class="terminal-content p-6 md:p-8">
-      <div class="flex flex-col items-center mb-6">
-        <h1 class="text-3xl font-bold text-green-400 mb-2">./typing-test</h1>
-      </div>
-  
-      <!-- Display Text -->
-      <div class="typing-text-container bg-gray-800 p-4 rounded-lg mb-6 leading-relaxed">
-        <p id="typing-text" class="text-white text-lg"></p>
-      </div>
+    <div class="body">
 
-      <!-- Typing Input -->
+      <p class="head">
+        <span class="prompt">sharan@sre:~$</span> <span class="cmd">./typingSpeed</span>
+      </p>
+
+      <div class="text-box" id="text-box"></div>
+
       <textarea
+        class="typing-input"
         id="typing-input"
-        class="w-full h-24 bg-gray-800 p-4 rounded-lg border-2 border-green-600 text-white text-lg resize-none focus:outline-none"
-        placeholder="Start typing here..."
-        autofocus
+        placeholder="press start, then type here..."
         disabled
       ></textarea>
-      
-      <!-- Results & Buttons -->
-      <div id="results" class="mt-6 hidden">
-          <p class="text-xl">WPM: <span id="wpm" class="text-green-400 font-bold">0</span></p>
-          <p class="text-xl">Accuracy: <span id="accuracy" class="text-green-400 font-bold">0%</span></p>
+
+      <div class="results" id="results">
+        <div class="stat">
+          <span class="stat-val" id="wpm">0</span>
+          <span class="stat-label">wpm</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val" id="accuracy">0%</span>
+          <span class="stat-label">accuracy</span>
+        </div>
       </div>
-      
-      <div class="flex flex-col sm:flex-row gap-4 items-center mt-6">
-        <button
-          id="start-btn"
-          class="flex-1 w-full bg-green-600 hover:bg-green-700 text-black font-bold py-3 px-6 rounded-lg transition-colors shadow-md border-2 border-green-500"
-        >
-          Start Test
-        </button>
-        <button
-          id="new-test-btn"
-          class="flex-1 w-full bg-blue-600 hover:bg-blue-700 text-black font-bold py-3 px-6 rounded-lg transition-colors shadow-md border-2 border-blue-500 hidden"
-        >
-          New Test
-        </button>
+
+      <div class="btn-row">
+        <button class="btn btn-start" id="start-btn">start test</button>
+        <button class="btn btn-new hidden" id="new-btn">new test</button>
       </div>
-    
-      <!-- Back button with 'cd ..' text at the bottom -->
-      <div class="flex justify-center mt-6">
-          <p>sharan@sre:~$ <a href="../../index.html" class="text-blue-400 hover:text-blue-300 transition duration-300">cd ..</a></p>
+
+      <div class="foot">
+        <span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a>
       </div>
+
     </div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const typingTextEl = document.getElementById('typing-text');
-      const typingInputEl = document.getElementById('typing-input');
-      const startBtn = document.getElementById('start-btn');
-      const newTestBtn = document.getElementById('new-test-btn');
-      const resultsEl = document.getElementById('results');
-      const wpmEl = document.getElementById('wpm');
-      const accuracyEl = document.getElementById('accuracy');
-      const themeToggle = document.getElementById('theme-toggle');
-      const body = document.body;
-      const sunIcon = document.getElementById('sun-icon');
-      const moonIcon = document.getElementById('moon-icon');
-      
-      const paragraphs = [
-        "The quick brown fox jumps over the lazy dog.",
-        "A journey of a thousand miles begins with a single step.",
-        "To be or not to be, that is the question.",
-        "The only thing we have to fear is fear itself.",
-        "All that glitters is not gold."
-      ];
+    const textBox    = document.getElementById('text-box');
+    const input      = document.getElementById('typing-input');
+    const startBtn   = document.getElementById('start-btn');
+    const newBtn     = document.getElementById('new-btn');
+    const resultsEl  = document.getElementById('results');
+    const wpmEl      = document.getElementById('wpm');
+    const accEl      = document.getElementById('accuracy');
+    const toggleBtn  = document.getElementById('toggle');
 
-      let currentParagraph = "";
-      let startTime = null;
-      let typedCharacters = 0;
-      let correctCharacters = 0;
-      let totalCharacters = 0;
+    const paragraphs = [
+      "The quick brown fox jumps over the lazy dog.",
+      "A journey of a thousand miles begins with a single step.",
+      "To be or not to be, that is the question.",
+      "The only thing we have to fear is fear itself.",
+      "All that glitters is not gold.",
+      "In the middle of difficulty lies opportunity.",
+      "It does not matter how slowly you go as long as you do not stop.",
+    ];
 
-      function resetTest() {
-        // Reset all state variables
-        currentParagraph = "";
-        startTime = null;
-        typedCharacters = 0;
-        correctCharacters = 0;
-        totalCharacters = 0;
+    let current = '', startTime = null, total = 0;
 
-        // Reset UI elements
-        typingTextEl.innerHTML = "";
-        typingInputEl.value = "";
-        typingInputEl.disabled = true;
-        resultsEl.classList.add('hidden');
-        startBtn.classList.remove('hidden');
-        newTestBtn.classList.add('hidden');
-      }
+    function reset() {
+      current = ''; startTime = null; total = 0;
+      textBox.innerHTML = '';
+      input.value = '';
+      input.disabled = true;
+      resultsEl.classList.remove('show');
+      startBtn.classList.remove('hidden');
+      newBtn.classList.add('hidden');
+    }
 
-      function startTest() {
-        // Hide the start button and show the new test button
-        startBtn.classList.add('hidden');
-        newTestBtn.classList.remove('hidden');
+    function start() {
+      current = paragraphs[Math.floor(Math.random() * paragraphs.length)];
+      total = current.length;
+      textBox.innerHTML = current.split('').map(c =>
+        `<span class="untyped">${c}</span>`
+      ).join('');
+      input.disabled = false;
+      input.value = '';
+      input.focus();
+      startTime = Date.now();
+      startBtn.classList.add('hidden');
+      newBtn.classList.remove('hidden');
+      resultsEl.classList.remove('show');
+    }
 
-        // Choose a random paragraph
-        const randomIndex = Math.floor(Math.random() * paragraphs.length);
-        currentParagraph = paragraphs[randomIndex];
-        totalCharacters = currentParagraph.length;
-        
-        // Display the paragraph with spans for color coding
-        typingTextEl.innerHTML = currentParagraph.split('').map(char => `<span class="untyped">${char}</span>`).join('');
-        
-        // Enable the input field and focus on it
-        typingInputEl.disabled = false;
-        typingInputEl.focus();
+    function onInput() {
+      const typed = input.value;
+      const spans = textBox.querySelectorAll('span');
+      let correct = 0;
 
-        // Start the timer
-        startTime = new Date();
-      }
-
-      function updateTypingTest() {
-        const typedText = typingInputEl.value;
-        const characters = typingTextEl.querySelectorAll('span');
-        
-        // Reset correct character count
-        correctCharacters = 0;
-
-        // Iterate through each character and check for correctness
-        typedCharacters = typedText.length;
-        characters.forEach((charSpan, index) => {
-            const char = currentParagraph[index];
-            const typedChar = typedText[index];
-
-            if (typedChar == null) {
-                // Not yet typed
-                charSpan.classList.remove('text-green-400', 'text-red-400');
-                charSpan.classList.add('text-white');
-            } else if (typedChar === char) {
-                // Correctly typed
-                charSpan.classList.remove('text-white', 'text-red-400');
-                charSpan.classList.add('text-green-400');
-                correctCharacters++;
-            } else {
-                // Incorrectly typed
-                charSpan.classList.remove('text-white', 'text-green-400');
-                charSpan.classList.add('text-red-400');
-            }
-        });
-        
-        // Check if the test is finished
-        if (typedCharacters >= totalCharacters) {
-            endTest();
-        }
-      }
-
-      function endTest() {
-        // Disable input field and calculate results
-        typingInputEl.disabled = true;
-        const endTime = new Date();
-        const elapsedMinutes = (endTime - startTime) / 60000;
-        
-        const wpm = Math.round((correctCharacters / 5) / elapsedMinutes) || 0;
-        const accuracy = totalCharacters > 0 ? Math.round((correctCharacters / typedCharacters) * 100) : 0;
-        
-        // Display results
-        wpmEl.textContent = wpm;
-        accuracyEl.textContent = `${accuracy}%`;
-        resultsEl.classList.remove('hidden');
-      }
-
-      // Event Listeners
-      startBtn.addEventListener('click', startTest);
-      newTestBtn.addEventListener('click', resetTest);
-      typingInputEl.addEventListener('input', updateTypingTest);
-
-      // Theme toggle functionality
-      themeToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-        
-        // Toggle icon visibility
-        if (body.classList.contains('light-mode')) {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        } else {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        }
+      spans.forEach((s, i) => {
+        s.className = typed[i] == null ? 'untyped'
+          : typed[i] === current[i] ? 'correct'
+          : 'wrong';
+        if (typed[i] === current[i]) correct++;
       });
+
+      if (typed.length >= total) {
+        input.disabled = true;
+        const mins = (Date.now() - startTime) / 60000;
+        wpmEl.textContent  = Math.round((correct / 5) / mins) || 0;
+        accEl.textContent  = total ? Math.round((correct / typed.length) * 100) + '%' : '0%';
+        resultsEl.classList.add('show');
+      }
+    }
+
+    startBtn.addEventListener('click', start);
+    newBtn.addEventListener('click', reset);
+    input.addEventListener('input', onInput);
+
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      toggleBtn.textContent = document.body.classList.contains('light') ? 'dark' : 'light';
     });
+
+    reset();
   </script>
 </body>
 </html>

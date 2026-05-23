@@ -1,222 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Previewer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      .terminal-window {
-        background-color: #1a1a1a;
-        border: 1px solid #333;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        padding: 0;
-        overflow: hidden;
-      }
-      .terminal-header {
-        background-color: #333;
-        height: 25px;
-        display: flex;
-        align-items: center;
-        padding: 0 8px;
-        justify-content: flex-start;
-      }
-      .terminal-button {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-      }
-      .close-btn { background-color: #ff5f56; }
-      .minimize-btn { background-color: #ffbd2e; }
-      .maximize-btn { background-color: #27c93f; }
-      .terminal-content {
-        padding: 1.5rem;
-      }
-      body.light-mode {
-        background-color: #f0f4f8;
-        color: #1a202c;
-      }
-      body.light-mode .terminal-window {
-        background-color: #e0e0e0;
-        border-color: #ccc;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      body.light-mode .terminal-header {
-        background-color: #ccc;
-      }
-      body.light-mode .text-green-400 {
-        color: #1a202c;
-      }
-      body.light-mode .border-green-600 {
-        border-color: #e2e8f0;
-      }
-      body.light-mode .bg-green-600 {
-        background-color: #4c51bf;
-      }
-      body.light-mode .hover\:bg-green-700:hover {
-        background-color: #434190;
-      }
-      body.light-mode .shadow-xl {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      }
-      .light-mode .hover\:bg-gray-700:hover {
-        background-color: #d1d5db;
-      }
-      body.light-mode .text-white {
-        color: #1a202c;
-      }
-      body.light-mode .bg-gray-800,
-      body.light-mode textarea {
-        background-color: #f0f4f8;
-        color: #1a202c;
-      }
-      /* Custom styles for the markdown output */
-      #previewer {
-        color: #fff;
-      }
-      #previewer h1 { font-size: 2rem; font-weight: bold; }
-      #previewer h2 { font-size: 1.5rem; font-weight: bold; }
-      #previewer h3 { font-size: 1.25rem; font-weight: bold; }
-      #previewer p { margin-bottom: 1em; }
-      #previewer a { color: #4c51bf; text-decoration: underline; }
-      #previewer pre {
-        background-color: #2d3748;
-        color: #cbd5e0;
-        padding: 1em;
-        border-radius: 0.5rem;
-        overflow-x: auto;
-      }
-      body.light-mode #previewer {
-        color: #1a202c;
-      }
-      body.light-mode #previewer a {
-        color: #4c51bf;
-      }
-      body.light-mode #previewer pre {
-        background-color: #e2e8f0;
-        color: #1a202c;
-      }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>markdown-preview — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --chrome: #252525;
+      --ink: #d4d4d4;
+      --dim: #555;
+      --bright: #f0f0f0;
+      --prompt: #3fb950;
+      --accent: #c8f53a;
+      --link: #58a6ff;
+      --font: 'Fira Code', monospace;
+    }
+
+    body.light {
+      --bg: #f0f0f0;
+      --surface: #e2e2e2;
+      --border: #ccc;
+      --chrome: #d0d0d0;
+      --ink: #2a2a2a;
+      --dim: #888;
+      --bright: #111;
+      --prompt: #1a7f37;
+      --accent: #5a8a00;
+      --link: #0969da;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      transition: background .2s, color .2s;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 1000px;
+      height: calc(100vh - 3rem);
+      min-height: 500px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .titlebar {
+      background: var(--chrome);
+      border-bottom: 1px solid var(--border);
+      height: 36px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 7px;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .dot.red    { background: #ff5f57; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green  { background: #27c93f; }
+
+    .titlebar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: .04em;
+      margin-left: -60px;
+    }
+
+    .toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: var(--font);
+      font-size: 10px;
+      color: var(--dim);
+      cursor: pointer;
+      letter-spacing: .06em;
+      transition: color .15s, border-color .15s;
+    }
+    .toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+    /* ── MAIN LAYOUT ── */
+    .editor-wrap {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+    }
+
+    /* column headers */
+    .col-head {
+      font-size: 10px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      padding: .6rem 1.25rem .4rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .col-head.right { border-left: 1px solid var(--border); }
+
+    /* panes */
+    .pane {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .pane.right { border-left: 1px solid var(--border); }
+
+    textarea.pane {
+      font-family: var(--font);
+      font-size: 12.5px;
+      line-height: 1.8;
+      padding: 1.1rem 1.25rem;
+      background: var(--bg);
+      color: var(--ink);
+      border: none;
+      resize: none;
+      outline: none;
+    }
+    textarea.pane::placeholder { color: var(--dim); }
+
+    .preview-pane {
+      padding: 1.1rem 1.25rem;
+      background: var(--bg);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    /* ── MARKDOWN STYLES ── */
+    .preview-pane h1 { font-size: 1.6rem; font-weight: 700; color: var(--bright); margin-bottom: .6rem; }
+    .preview-pane h2 { font-size: 1.25rem; font-weight: 700; color: var(--bright); margin-bottom: .5rem; margin-top: 1rem; }
+    .preview-pane h3 { font-size: 1rem; font-weight: 700; color: var(--bright); margin-bottom: .4rem; margin-top: .8rem; }
+    .preview-pane p  { margin-bottom: .8rem; color: var(--ink); }
+    .preview-pane a  { color: var(--link); text-decoration: underline; }
+    .preview-pane strong { color: var(--bright); }
+    .preview-pane em { color: var(--ink); font-style: italic; }
+    .preview-pane ul, .preview-pane ol { padding-left: 1.25rem; margin-bottom: .8rem; }
+    .preview-pane li { margin-bottom: .2rem; color: var(--ink); }
+    .preview-pane code {
+      font-family: var(--font);
+      font-size: 11.5px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .preview-pane pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .85rem 1rem;
+      overflow-x: auto;
+      margin-bottom: .8rem;
+    }
+    .preview-pane pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--ink);
+    }
+    .preview-pane blockquote {
+      border-left: 2px solid var(--accent);
+      padding-left: .85rem;
+      color: var(--dim);
+      margin-bottom: .8rem;
+    }
+    .preview-pane hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1rem 0;
+    }
+
+    /* ── FOOTER ── */
+    .foot {
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: var(--dim);
+      border-top: 1px solid var(--border);
+      padding: .75rem 1.25rem;
+    }
+    .foot a { color: var(--link); text-decoration: none; }
+    .foot a:hover { text-decoration: underline; }
+
+    .prompt { color: var(--prompt); font-weight: 700; }
+
+    @media (max-width: 600px) {
+      body { padding: .75rem; }
+      .terminal { height: calc(100vh - 1.5rem); }
+      .editor-wrap { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto 1fr auto; }
+      .col-head.right, .pane.right { border-left: none; border-top: 1px solid var(--border); }
+    }
+  </style>
 </head>
-<body class="bg-gray-950 text-green-400 font-mono flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
+<body>
+  <div class="terminal" role="main">
 
-  <div class="terminal-window rounded-2xl w-full max-w-5xl transition-colors duration-300">
-    
-    <div class="terminal-header flex-shrink-0 rounded-t-2xl">
-      <div class="terminal-button close-btn"></div>
-      <div class="terminal-button minimize-btn"></div>
-      <div class="terminal-button maximize-btn"></div>
-      <div class="flex-grow"></div>
-      <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none">
-          <!-- Sun Icon for Light Mode -->
-          <svg id="sun-icon" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: block;">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM12 4v2m0 12v2m8-8h2m-2-4h2M4 12H2m4 4h-2m14-8h-2"/>
-          </svg>
-          <!-- Moon Icon for Dark Mode -->
-          <svg id="moon-icon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-            <path d="M21 12.79A9 9 0 1111.21 3.21a9 9 0 009.79 9.58z"></path>
-          </svg>
-      </button>
+    <div class="titlebar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/markdown-preview</span>
+      <button class="toggle" id="toggle" aria-label="Toggle light/dark mode">light</button>
     </div>
 
-    <div class="terminal-content p-6 md:p-8">
-      <div class="flex flex-col items-center mb-6">
-        <h1 class="text-3xl font-bold text-green-400 mb-2">./markdown-preview</h1>
-      </div>
-  
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Markdown Input -->
-        <div>
-          <h2 class="text-xl font-bold text-green-400 mb-2">Input (.md)</h2>
-          <textarea
-            id="markdown-input"
-            class="w-full h-96 bg-gray-800 p-4 rounded-lg border-2 border-green-600 text-white text-lg resize-none focus:outline-none"
-            placeholder="# Hello, Markdown!
+    <div class="editor-wrap">
+      <div class="col-head"><span class="prompt">$</span> input.md</div>
+      <div class="col-head right"><span class="prompt">$</span> preview.html</div>
 
-Write your Markdown here and see the live preview on the right.
+      <textarea
+        class="pane"
+        id="md-input"
+        placeholder="# start typing markdown..."
+        spellcheck="false"
+      ></textarea>
 
-**Features:**
-- Headings
-- *Italics*
-- **Bold**
-- `inline code`
-- [Links](https://example.com)
+      <div class="pane right preview-pane" id="preview"></div>
 
-\`\`\`javascript
-// Code blocks
-function sayHello() {
-  console.log('Hello, world!');
-}
-\`\`\`"
-          ></textarea>
-        </div>
-
-        <!-- Live Preview -->
-        <div>
-          <h2 class="text-xl font-bold text-green-400 mb-2">Preview (.html)</h2>
-          <div
-            id="previewer"
-            class="w-full h-96 bg-gray-800 p-4 rounded-lg border-2 border-green-600 overflow-y-auto"
-          ></div>
-        </div>
-      </div>
-      
-      <!-- Back button with 'cd ..' text at the bottom -->
-      <div class="flex justify-center mt-6">
-          <p>sharan@sre:~$ <a href="../../index.html" class="text-blue-400 hover:text-blue-300 transition duration-300">cd ..</a></p>
+      <div class="foot">
+        <span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a>
       </div>
     </div>
+
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const markdownInput = document.getElementById('markdown-input');
-      const previewer = document.getElementById('previewer');
-      const themeToggle = document.getElementById('theme-toggle');
-      const body = document.body;
-      const sunIcon = document.getElementById('sun-icon');
-      const moonIcon = document.getElementById('moon-icon');
+    const mdInput  = document.getElementById('md-input');
+    const preview  = document.getElementById('preview');
+    const toggleBtn= document.getElementById('toggle');
 
-      // Function to render markdown
-      const renderMarkdown = () => {
-        const markdown = markdownInput.value;
-        const html = marked.parse(markdown);
-        previewer.innerHTML = html;
-      };
+    const defaultMd = `# Hello, Markdown!
 
-      // Initial render
-      renderMarkdown();
+Write your markdown on the left and see it render here.
 
-      // Event listener for real-time updates
-      markdownInput.addEventListener('input', renderMarkdown);
+**Bold**, *italic*, \`inline code\`
 
-      // Theme toggle functionality
-      themeToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-        
-        // Toggle icon visibility
-        if (body.classList.contains('light-mode')) {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        } else {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        }
-      });
+## Code block
+\`\`\`javascript
+function greet() {
+  console.log('hello, world');
+}
+\`\`\`
+
+## List
+- Kubernetes
+- Terraform
+- Prometheus
+
+> "Reliability is a feature." — every SRE ever
+`;
+
+    function render() {
+      preview.innerHTML = marked.parse(mdInput.value);
+    }
+
+    mdInput.value = defaultMd;
+    render();
+    mdInput.addEventListener('input', render);
+
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      toggleBtn.textContent = document.body.classList.contains('light') ? 'dark' : 'light';
     });
   </script>
 </body>
