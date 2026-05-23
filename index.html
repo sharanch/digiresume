@@ -379,29 +379,35 @@
           <li onclick="window.open('https://github.com/sharanch/log-explainer','_blank')" tabindex="0">
             <span class="proj-num">02</span>
             <span class="proj-name">aiops log-explainer</span>
-            <span class="proj-tag">python · ollama · local llm · privacy-first</span>
+            <span class="proj-tag">python · ollama · elasticsearch · kibana · local llm</span>
+            <span class="proj-arrow">↗</span>
+          </li>
+          <li onclick="window.open('https://github.com/sharanch/inkwell-complete','_blank')" tabindex="0">
+            <span class="proj-num">03</span>
+            <span class="proj-name">inkwell</span>
+            <span class="proj-tag">go · kubernetes · argocd · istio · redis</span>
             <span class="proj-arrow">↗</span>
           </li>
           <li onclick="window.open('https://github.com/sharanch/istio-mesh-demo','_blank')" tabindex="0">
-            <span class="proj-num">03</span>
+            <span class="proj-num">04</span>
             <span class="proj-name">istio-mesh-demo</span>
             <span class="proj-tag">istio · mtls · canary · fault injection</span>
             <span class="proj-arrow">↗</span>
           </li>
           <li onclick="window.open('https://github.com/sharanch/resilient-data-poc','_blank')" tabindex="0">
-            <span class="proj-num">04</span>
+            <span class="proj-num">05</span>
             <span class="proj-name">postgresql-ha-lab</span>
             <span class="proj-tag">cloudnativepg · rpo &lt;5s · rto &lt;30s · chaos</span>
             <span class="proj-arrow">↗</span>
           </li>
           <li onclick="window.open('https://github.com/sharanch/chatops','_blank')" tabindex="0">
-            <span class="proj-num">05</span>
+            <span class="proj-num">06</span>
             <span class="proj-name">chatops-gitops</span>
             <span class="proj-tag">argocd · helm · react · node · postgres</span>
             <span class="proj-arrow">↗</span>
           </li>
           <li onclick="window.open('https://aws-security-docs.sharanch.dev/','_blank')" tabindex="0">
-            <span class="proj-num">06</span>
+            <span class="proj-num">07</span>
             <span class="proj-name">aws-security-best-practices</span>
             <span class="proj-tag">terraform · iam · ec2 · s3 · live docs</span>
             <span class="proj-arrow">↗</span>
@@ -432,6 +438,9 @@
           <span class="chip">bash</span>
           <span class="chip">github actions</span>
           <span class="chip">docker</span>
+          <span class="chip">elasticsearch</span>
+          <span class="chip">filebeat</span>
+          <span class="chip">kibana</span>
           <span class="chip">zabbix</span>
           <span class="chip">opentelemetry</span>
           <span class="chip">kvm</span>
@@ -473,11 +482,6 @@
         if (e.key === 'Enter' || e.key === ' ') li.click();
       });
     });
-
-    // Wire to UptimeRobot API to replace static value:
-    // fetch('YOUR_UPTIMEROBOT_ENDPOINT')
-    //   .then(r => r.json())
-    //   .then(d => document.getElementById('uptime').textContent = d.uptime + '%');
   </script>
 </body>
 </html>
