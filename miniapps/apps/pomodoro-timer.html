@@ -1,302 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tone@14.7.58/build/Tone.min.js"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      .terminal-window {
-        background-color: #1a1a1a;
-        border: 1px solid #333;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        padding: 0;
-        overflow: hidden;
-      }
-      .terminal-header {
-        background-color: #333;
-        height: 25px;
-        display: flex;
-        align-items: center;
-        padding: 0 8px;
-        justify-content: flex-start;
-      }
-      .terminal-button {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-      }
-      .close-btn { background-color: #ff5f56; }
-      .minimize-btn { background-color: #ffbd2e; }
-      .maximize-btn { background-color: #27c93f; }
-      .terminal-content {
-        padding: 1.5rem;
-      }
-      body.light-mode {
-        background-color: #f0f4f8;
-        color: #1a202c;
-      }
-      body.light-mode .terminal-window {
-        background-color: #e0e0e0;
-        border-color: #ccc;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      body.light-mode .terminal-header {
-        background-color: #ccc;
-      }
-      body.light-mode .text-green-400 {
-        color: #1a202c;
-      }
-      body.light-mode .border-green-600 {
-        border-color: #e2e8f0;
-      }
-      body.light-mode .bg-green-600 {
-        background-color: #4c51bf;
-      }
-      body.light-mode .hover\:bg-green-700:hover {
-        background-color: #434190;
-      }
-      body.light-mode .shadow-xl {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      }
-      .light-mode #message-box {
-        background-color: #f0f4f8;
-        color: #1a202c;
-      }
-      .light-mode .hover\:bg-gray-700:hover {
-        background-color: #d1d5db;
-      }
-    </style>
-</head>
-<body class="bg-gray-950 text-green-400 font-mono flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pomodoro — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.7.58/build/Tone.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <div class="terminal-window rounded-2xl w-full max-w-xl transition-colors duration-300">
-    
-    <div class="terminal-header flex-shrink-0 rounded-t-2xl">
-      <div class="terminal-button close-btn"></div>
-      <div class="terminal-button minimize-btn"></div>
-      <div class="terminal-button maximize-btn"></div>
-      <div class="flex-grow"></div>
-      <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none">
-          <!-- Sun Icon for Light Mode -->
-          <svg id="sun-icon" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM12 4v2m0 12v2m8-8h2m-2-4h2M4 12H2m4 4h-2m14-8h-2"/>
-          </svg>
-          <!-- Moon Icon for Dark Mode -->
-          <svg id="moon-icon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: block;">
-            <path d="M21 12.79A9 9 0 1111.21 3.21a9 9 0 009.79 9.58z"></path>
-          </svg>
-      </button>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --chrome: #252525;
+      --ink: #d4d4d4;
+      --dim: #555;
+      --bright: #f0f0f0;
+      --prompt: #3fb950;
+      --accent: #c8f53a;
+      --link: #58a6ff;
+      --font: 'Fira Code', monospace;
+    }
+
+    body.light {
+      --bg: #f0f0f0;
+      --surface: #e2e2e2;
+      --border: #ccc;
+      --chrome: #d0d0d0;
+      --ink: #2a2a2a;
+      --dim: #888;
+      --bright: #111;
+      --prompt: #1a7f37;
+      --accent: #5a8a00;
+      --link: #0969da;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      transition: background .2s, color .2s;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .titlebar {
+      background: var(--chrome);
+      border-bottom: 1px solid var(--border);
+      height: 36px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 7px;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .dot.red    { background: #ff5f57; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green  { background: #27c93f; }
+
+    .titlebar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: .04em;
+      margin-left: -60px;
+    }
+
+    .toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: var(--font);
+      font-size: 10px;
+      color: var(--dim);
+      cursor: pointer;
+      letter-spacing: .06em;
+      transition: color .15s, border-color .15s;
+    }
+    .toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+    .body {
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    .prompt { color: var(--prompt); font-weight: 700; }
+    .cmd    { color: var(--bright); }
+
+    /* ── TIMER ── */
+    .timer-head {
+      font-size: 13px;
+      margin-bottom: 1.75rem;
+    }
+
+    .session-type {
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-top: .4rem;
+    }
+
+    .timer-display {
+      font-size: clamp(4rem, 18vw, 5.5rem);
+      font-weight: 700;
+      color: var(--bright);
+      text-align: center;
+      letter-spacing: .04em;
+      margin: 1.25rem 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      padding: .55rem 0;
+      border-radius: 5px;
+      border: 1px solid;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .8; }
+
+    .btn-start  { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+    .btn-pause  { background: transparent;   color: var(--ink); border-color: var(--border); }
+    .btn-reset  { background: transparent;   color: var(--dim); border-color: var(--border); }
+
+    /* ── SESSION SWITCH ── */
+    .session-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.75rem;
+    }
+
+    .sess-btn {
+      font-family: var(--font);
+      font-size: 10px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--dim);
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: color .15s, border-color .15s;
+    }
+
+    .sess-btn.active {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    .foot {
+      font-size: 12px;
+      color: var(--dim);
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      margin-top: .25rem;
+    }
+
+    .foot a {
+      color: var(--link);
+      text-decoration: none;
+    }
+    .foot a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="terminal" role="main">
+
+    <div class="titlebar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/pomodoro</span>
+      <button class="toggle" id="toggle" aria-label="Toggle light/dark mode">light</button>
     </div>
 
-    <div class="terminal-content p-6 md:p-8">
-      <div class="flex flex-col items-center mb-6">
-        <h1 class="text-3xl font-bold text-green-400 mb-2">./pomodoro</h1>
-        <div id="session-type" class="text-xl text-green-400">Work Session</div>
-      </div>
-  
-      <!-- Timer Display -->
-      <div class="flex justify-center mb-6">
-        <div class="text-6xl md:text-8xl font-bold text-white transition-colors duration-300" id="timer">
-          25:00
-        </div>
+    <div class="body">
+
+      <div class="timer-head">
+        <span class="prompt">sharan@sre:~$</span> <span class="cmd">./pomodoro</span>
+        <p class="session-type" id="session-type">work session</p>
       </div>
 
-      <!-- Controls -->
-      <div class="flex flex-col sm:flex-row gap-4 items-center mb-6">
-        <button
-          id="start-btn"
-          class="flex-1 w-full bg-green-600 hover:bg-green-700 text-black font-bold py-3 px-6 rounded-lg transition-colors shadow-md border-2 border-green-500"
-        >
-          Start
-        </button>
-        <button
-          id="pause-btn"
-          class="flex-1 w-full bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-3 px-6 rounded-lg transition-colors shadow-md border-2 border-yellow-500"
-        >
-          Pause
-        </button>
-        <button
-          id="reset-btn"
-          class="flex-1 w-full bg-red-600 hover:bg-red-700 text-black font-bold py-3 px-6 rounded-lg transition-colors shadow-md border-2 border-red-500"
-        >
-          Reset
-        </button>
+      <div class="timer-display" id="timer">25:00</div>
+
+      <div class="controls">
+        <button class="btn btn-start" id="start-btn">start</button>
+        <button class="btn btn-pause" id="pause-btn">pause</button>
+        <button class="btn btn-reset" id="reset-btn">reset</button>
       </div>
 
-      <!-- Session Switch Buttons -->
-      <div class="flex justify-center gap-4">
-        <button
-          id="work-btn"
-          class="text-sm font-bold text-green-400 px-4 py-2 rounded-lg border-2 border-green-400 hover:bg-green-400 hover:text-black transition-colors"
-        >
-          Work (25 min)
-        </button>
-        <button
-          id="break-btn"
-          class="text-sm font-bold text-gray-400 px-4 py-2 rounded-lg border-2 border-gray-400 hover:bg-gray-400 hover:text-black transition-colors"
-        >
-          Break (5 min)
-        </button>
+      <div class="session-switch">
+        <button class="sess-btn active" id="work-btn">work (25 min)</button>
+        <button class="sess-btn" id="break-btn">break (5 min)</button>
       </div>
-    
-      <!-- Back button with 'cd ..' text at the bottom -->
-      <div class="flex justify-center mt-6">
-          <p>sharan@sre:~$ <a href="../../index.html" class="text-blue-400 hover:text-blue-300 transition duration-300">cd ..</a></p>
+
+      <div class="foot">
+        <span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a>
       </div>
+
     </div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const timerDisplay = document.getElementById('timer');
-      const startBtn = document.getElementById('start-btn');
-      const pauseBtn = document.getElementById('pause-btn');
-      const resetBtn = document.getElementById('reset-btn');
-      const workBtn = document.getElementById('work-btn');
-      const breakBtn = document.getElementById('break-btn');
-      const sessionTypeDisplay = document.getElementById('session-type');
-      const themeToggle = document.getElementById('theme-toggle');
-      const body = document.body;
-      const sunIcon = document.getElementById('sun-icon');
-      const moonIcon = document.getElementById('moon-icon');
+    const timerEl      = document.getElementById('timer');
+    const sessionLabel = document.getElementById('session-type');
+    const startBtn     = document.getElementById('start-btn');
+    const pauseBtn     = document.getElementById('pause-btn');
+    const resetBtn     = document.getElementById('reset-btn');
+    const workBtn      = document.getElementById('work-btn');
+    const breakBtn     = document.getElementById('break-btn');
+    const toggleBtn    = document.getElementById('toggle');
 
-      const workTime = 25 * 60; // 25 minutes in seconds
-      const breakTime = 5 * 60; // 5 minutes in seconds
+    const WORK  = 25 * 60;
+    const BREAK = 5  * 60;
 
-      let timeRemaining = workTime;
-      let isPaused = true;
-      let sessionType = 'work';
-      let animationFrameId;
-      let lastTime;
+    let timeRemaining = WORK;
+    let sessionType   = 'work';
+    let isPaused      = true;
+    let rafId, lastTs;
 
-      const synth = new Tone.Synth().toDestination();
+    const synth = new Tone.Synth().toDestination();
 
-      function playSound() {
-        synth.triggerAttackRelease("C4", "8n");
+    function fmt(s) {
+      return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    }
+
+    function render() { timerEl.textContent = fmt(timeRemaining); }
+
+    function loop(ts) {
+      if (!lastTs) lastTs = ts;
+      const elapsed = (ts - lastTs) / 1000;
+      if (elapsed >= 1) {
+        timeRemaining = Math.max(0, timeRemaining - Math.floor(elapsed));
+        render();
+        lastTs = ts;
       }
+      if (timeRemaining <= 0) { synth.triggerAttackRelease('C4','8n'); switchSession(); return; }
+      rafId = requestAnimationFrame(loop);
+    }
 
-      function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      }
+    function start() {
+      if (!isPaused) return;
+      isPaused = false; lastTs = null;
+      rafId = requestAnimationFrame(loop);
+    }
 
-      function updateDisplay() {
-        timerDisplay.textContent = formatTime(timeRemaining);
-      }
+    function pause() {
+      isPaused = true;
+      cancelAnimationFrame(rafId);
+    }
 
-      function timerLoop(timestamp) {
-        if (!lastTime) lastTime = timestamp;
-        const elapsed = (timestamp - lastTime) / 1000;
-        
-        if (elapsed >= 1) {
-            timeRemaining = Math.max(0, timeRemaining - Math.floor(elapsed));
-            updateDisplay();
-            lastTime = timestamp;
-        }
+    function reset() {
+      pause();
+      timeRemaining = sessionType === 'work' ? WORK : BREAK;
+      render();
+    }
 
-        if (timeRemaining <= 0) {
-            playSound();
-            toggleSession();
-            return;
-        }
+    function setSession(type) {
+      pause();
+      sessionType = type;
+      timeRemaining = type === 'work' ? WORK : BREAK;
+      sessionLabel.textContent = type === 'work' ? 'work session' : 'break session';
+      workBtn.classList.toggle('active',  type === 'work');
+      breakBtn.classList.toggle('active', type === 'break');
+      render();
+    }
 
-        animationFrameId = requestAnimationFrame(timerLoop);
-      }
+    function switchSession() { setSession(sessionType === 'work' ? 'break' : 'work'); }
 
-      function startTimer() {
-        if (!isPaused) return;
-        isPaused = false;
-        lastTime = null;
-        animationFrameId = requestAnimationFrame(timerLoop);
-      }
+    startBtn.addEventListener('click', start);
+    pauseBtn.addEventListener('click', pause);
+    resetBtn.addEventListener('click', reset);
+    workBtn.addEventListener('click',  () => setSession('work'));
+    breakBtn.addEventListener('click', () => setSession('break'));
 
-      function pauseTimer() {
-        isPaused = true;
-        cancelAnimationFrame(animationFrameId);
-      }
-
-      function resetTimer() {
-        pauseTimer();
-        timeRemaining = sessionType === 'work' ? workTime : breakTime;
-        updateDisplay();
-      }
-
-      function toggleSession() {
-        pauseTimer();
-        if (sessionType === 'work') {
-          sessionType = 'break';
-          timeRemaining = breakTime;
-          sessionTypeDisplay.textContent = 'Break Session';
-          breakBtn.classList.add('border-green-400', 'text-green-400');
-          breakBtn.classList.remove('border-gray-400', 'text-gray-400');
-          workBtn.classList.add('border-gray-400', 'text-gray-400');
-          workBtn.classList.remove('border-green-400', 'text-green-400');
-        } else {
-          sessionType = 'work';
-          timeRemaining = workTime;
-          sessionTypeDisplay.textContent = 'Work Session';
-          workBtn.classList.add('border-green-400', 'text-green-400');
-          workBtn.classList.remove('border-gray-400', 'text-gray-400');
-          breakBtn.classList.add('border-gray-400', 'text-gray-400');
-          breakBtn.classList.remove('border-green-400', 'text-green-400');
-        }
-        updateDisplay();
-      }
-
-      startBtn.addEventListener('click', startTimer);
-      pauseBtn.addEventListener('click', pauseTimer);
-      resetBtn.addEventListener('click', resetTimer);
-      workBtn.addEventListener('click', () => {
-        sessionType = 'work';
-        resetTimer();
-        sessionTypeDisplay.textContent = 'Work Session';
-        workBtn.classList.add('border-green-400', 'text-green-400');
-        workBtn.classList.remove('border-gray-400', 'text-gray-400');
-        breakBtn.classList.add('border-gray-400', 'text-gray-400');
-        breakBtn.classList.remove('border-green-400', 'text-green-400');
-      });
-      breakBtn.addEventListener('click', () => {
-        sessionType = 'break';
-        resetTimer();
-        sessionTypeDisplay.textContent = 'Break Session';
-        breakBtn.classList.add('border-green-400', 'text-green-400');
-        breakBtn.classList.remove('border-gray-400', 'text-gray-400');
-        workBtn.classList.add('border-gray-400', 'text-gray-400');
-        workBtn.classList.remove('border-green-400', 'text-green-400');
-      });
-
-      // Theme toggle functionality
-      themeToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-        
-        // Toggle icon visibility
-        if (body.classList.contains('light-mode')) {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        } else {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        }
-      });
-      
-      updateDisplay();
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      toggleBtn.textContent = document.body.classList.contains('light') ? 'dark' : 'light';
     });
+
+    render();
   </script>
 </body>
 </html>
