@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>base64 — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--danger:#f85149;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;--danger:#cf222e;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:600px;height:calc(100vh - 3rem);min-height:480px;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;flex-shrink:0;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .editor-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto;overflow:hidden;}
+    .col-head{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;padding:.6rem 1.25rem .4rem;border-bottom:1px solid var(--border);background:var(--surface);}
+    .col-head.right{border-left:1px solid var(--border);}
+    .pane{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+    .pane.right{border-left:1px solid var(--border);}
+    textarea.pane{font-family:var(--font);font-size:12px;line-height:1.8;padding:1rem 1.25rem;background:var(--bg);color:var(--ink);border:none;resize:none;outline:none;}
+    textarea.pane::placeholder{color:var(--dim);}
+    .out-pane{padding:1rem 1.25rem;background:var(--bg);font-size:12px;line-height:1.8;word-break:break-all;white-space:pre-wrap;color:var(--ink);}
+    .out-pane .err{color:var(--danger);}
+    .foot{grid-column:1/-1;font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+    .foot-btns{display:flex;gap:8px;}
+    .mini-btn{font-family:var(--font);font-size:10px;padding:2px 9px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;transition:color .12s,border-color .12s;}
+    .mini-btn:hover{color:var(--accent);border-color:var(--accent);}
+    .prompt{color:var(--prompt);font-weight:700;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/base64</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="editor-wrap">
+      <div class="col-head"><span class="prompt">$</span> plain text</div>
+      <div class="col-head right"><span class="prompt">$</span> base64</div>
+      <textarea class="pane" id="plain" placeholder="type or paste text to encode..."></textarea>
+      <div class="pane right out-pane" id="encoded"></div>
+      <div class="foot">
+        <span><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></span>
+        <div class="foot-btns">
+          <button class="mini-btn" id="swap-btn">⇄ decode b64</button>
+          <button class="mini-btn" id="copy-btn">copy output</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const plainEl=document.getElementById('plain');
+    const encEl=document.getElementById('encoded');
+    let mode='encode'; // encode | decode
+
+    function run(){
+      const val=plainEl.value;
+      if(!val){encEl.textContent='';return;}
+      try{
+        if(mode==='encode'){
+          encEl.textContent=btoa(unescape(encodeURIComponent(val)));
+        } else {
+          encEl.textContent=decodeURIComponent(escape(atob(val)));
+        }
+        encEl.className='pane right out-pane';
+      } catch(e){
+        encEl.innerHTML='<span class="err">'+e.message+'</span>';
+      }
+    }
+
+    plainEl.addEventListener('input',run);
+
+    document.getElementById('swap-btn').addEventListener('click',()=>{
+      mode=mode==='encode'?'decode':'encode';
+      document.getElementById('swap-btn').textContent=mode==='encode'?'⇄ decode b64':'⇄ encode text';
+      document.querySelectorAll('.col-head')[0].innerHTML=`<span class="prompt">$</span> ${mode==='encode'?'plain text':'base64 input'}`;
+      document.querySelectorAll('.col-head')[1].innerHTML=`<span class="prompt">$</span> ${mode==='encode'?'base64':'decoded text'}`;
+      plainEl.value='';encEl.textContent='';
+      plainEl.placeholder=mode==='encode'?'type or paste text to encode...':'paste base64 to decode...';
+    });
+
+    document.getElementById('copy-btn').addEventListener('click',()=>{
+      if(encEl.textContent)navigator.clipboard.writeText(encEl.textContent);
+    });
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

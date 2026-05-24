@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>color-picker — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .swatch{width:100%;height:80px;border-radius:6px;border:1px solid var(--border);margin-bottom:1.25rem;transition:background .1s;}
+
+    .native-wrap{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+    .native-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;}
+    input[type="color"]{width:40px;height:32px;border:1px solid var(--border);border-radius:4px;padding:2px;background:var(--bg);cursor:pointer;}
+
+    .row{margin-bottom:.75rem;}
+    .row-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;}
+    .row-input{width:100%;font-family:var(--font);font-size:13px;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--bright);outline:none;transition:border-color .15s;letter-spacing:.04em;}
+    .row-input:focus{border-color:var(--accent);}
+    .row-input::placeholder{color:var(--dim);}
+
+    .copy-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+    .copy-chip{font-family:var(--font);font-size:10px;padding:2px 9px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;transition:color .12s,border-color .12s;}
+    .copy-chip:hover{color:var(--accent);border-color:var(--accent);}
+    .copy-chip.copied{color:var(--accent);border-color:var(--accent);}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/color-picker</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./color-picker</span></p>
+
+      <div class="swatch" id="swatch"></div>
+
+      <div class="native-wrap">
+        <span class="native-label">pick</span>
+        <input type="color" id="native-picker" value="#c8f53a">
+      </div>
+
+      <div class="row">
+        <div class="row-label">hex</div>
+        <input class="row-input" id="hex-in" placeholder="#c8f53a" value="#c8f53a" maxlength="7" spellcheck="false">
+      </div>
+      <div class="row">
+        <div class="row-label">rgb</div>
+        <input class="row-input" id="rgb-in" placeholder="rgb(200, 245, 58)" spellcheck="false">
+      </div>
+      <div class="row">
+        <div class="row-label">hsl</div>
+        <input class="row-input" id="hsl-in" placeholder="hsl(77, 90%, 59%)" spellcheck="false">
+      </div>
+
+      <div class="copy-row" id="copy-row">
+        <button class="copy-chip" data-field="hex-in">copy hex</button>
+        <button class="copy-chip" data-field="rgb-in">copy rgb</button>
+        <button class="copy-chip" data-field="hsl-in">copy hsl</button>
+      </div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const swatch=document.getElementById('swatch');
+    const native=document.getElementById('native-picker');
+    const hexIn=document.getElementById('hex-in');
+    const rgbIn=document.getElementById('rgb-in');
+    const hslIn=document.getElementById('hsl-in');
+
+    function hexToRgb(hex){
+      const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+      return{r,g,b};
+    }
+    function rgbToHex(r,g,b){'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
+    function rgbToHsl(r,g,b){
+      r/=255;g/=255;b/=255;
+      const max=Math.max(r,g,b),min=Math.min(r,g,b);
+      let h,s,l=(max+min)/2;
+      if(max===min){h=s=0;}
+      else{
+        const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+        switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
+      }
+      return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+    }
+
+    function applyHex(hex){
+      if(!/^#[0-9a-fA-F]{6}$/.test(hex))return;
+      swatch.style.background=hex;
+      native.value=hex;
+      const{r,g,b}=hexToRgb(hex);
+      rgbIn.value=`rgb(${r}, ${g}, ${b})`;
+      const{h,s,l}=rgbToHsl(r,g,b);
+      hslIn.value=`hsl(${h}, ${s}%, ${l}%)`;
+    }
+
+    function parseRgb(str){
+      const m=str.match(/rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
+      return m?{r:+m[1],g:+m[2],b:+m[3]}:null;
+    }
+
+    function parseHsl(str){
+      const m=str.match(/hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)/i);
+      return m?{h:+m[1],s:+m[2],l:+m[3]}:null;
+    }
+
+    function hslToRgb(h,s,l){
+      s/=100;l/=100;
+      const k=n=>(n+h/30)%12;
+      const a=s*Math.min(l,1-l);
+      const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));
+      return{r:Math.round(f(0)*255),g:Math.round(f(8)*255),b:Math.round(f(4)*255)};
+    }
+
+    function componentToHex(c){return c.toString(16).padStart(2,'0');}
+    function toHex(r,g,b){return'#'+[r,g,b].map(componentToHex).join('');}
+
+    hexIn.addEventListener('input',()=>applyHex(hexIn.value));
+    native.addEventListener('input',()=>{hexIn.value=native.value;applyHex(native.value);});
+    rgbIn.addEventListener('input',()=>{
+      const c=parseRgb(rgbIn.value);
+      if(c){hexIn.value=toHex(c.r,c.g,c.b);applyHex(hexIn.value);}
+    });
+    hslIn.addEventListener('input',()=>{
+      const c=parseHsl(hslIn.value);
+      if(c){const{r,g,b}=hslToRgb(c.h,c.s,c.l);hexIn.value=toHex(r,g,b);applyHex(hexIn.value);}
+    });
+
+    document.getElementById('copy-row').addEventListener('click',e=>{
+      const btn=e.target.closest('.copy-chip');
+      if(!btn)return;
+      const val=document.getElementById(btn.dataset.field).value;
+      navigator.clipboard.writeText(val);
+      btn.classList.add('copied');btn.textContent='copied!';
+      setTimeout(()=>{btn.classList.remove('copied');btn.textContent='copy '+btn.dataset.field.replace('-in','');},1500);
+    });
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+
+    applyHex('#c8f53a');
+  </script>
+</body>
+</html>

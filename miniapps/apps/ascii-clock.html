@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ascii-clock — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:680px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:2rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.75rem;}
+
+    .clock-display{font-size:clamp(10px,2.4vw,18px);line-height:1.15;text-align:center;color:var(--accent);letter-spacing:.1em;margin-bottom:1.25rem;font-variant-numeric:tabular-nums;}
+
+    .date-line{text-align:center;font-size:11px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;margin-top:1.25rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/ascii-clock</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./ascii-clock</span></p>
+      <div class="clock-display" id="clock"></div>
+      <div class="date-line" id="dateline"></div>
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const DIGITS={
+      '0':['█████','█   █','█   █','█   █','█████'],
+      '1':['  █  ','  █  ','  █  ','  █  ','  █  '],
+      '2':['█████','    █','█████','█    ','█████'],
+      '3':['█████','    █','█████','    █','█████'],
+      '4':['█   █','█   █','█████','    █','    █'],
+      '5':['█████','█    ','█████','    █','█████'],
+      '6':['█████','█    ','█████','█   █','█████'],
+      '7':['█████','    █','    █','    █','    █'],
+      '8':['█████','█   █','█████','█   █','█████'],
+      '9':['█████','█   █','█████','    █','█████'],
+      ':':['     ',' █   ','     ',' █   ','     '],
+    };
+
+    function render(time){
+      const chars=time.split('');
+      const rows=5;
+      let lines=[];
+      for(let r=0;r<rows;r++){
+        lines.push(chars.map(c=>DIGITS[c]?DIGITS[c][r]:'     ').join('  '));
+      }
+      return lines.join('\n');
+    }
+
+    function tick(){
+      const now=new Date();
+      const h=String(now.getHours()).padStart(2,'0');
+      const m=String(now.getMinutes()).padStart(2,'0');
+      const s=String(now.getSeconds()).padStart(2,'0');
+      document.getElementById('clock').textContent=render(`${h}:${m}:${s}`);
+      document.getElementById('dateline').textContent=now.toDateString();
+    }
+    setInterval(tick,1000);tick();
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

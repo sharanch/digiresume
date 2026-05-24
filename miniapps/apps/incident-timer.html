@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>incident-timer — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;
+      --ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;
+      --accent:#c8f53a;--link:#58a6ff;--warn:#ffb700;--danger:#f85149;
+      --font:'Fira Code',monospace;
+    }
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;--warn:#b45000;--danger:#cf222e;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;letter-spacing:.06em;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .big-timer{font-size:clamp(3rem,12vw,5rem);font-weight:700;color:var(--bright);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.04em;margin:1rem 0;}
+    .big-timer.warn{color:var(--warn);}.big-timer.danger{color:var(--danger);}
+
+    .milestones{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.25rem;}
+    .milestone{display:flex;align-items:center;gap:.75rem;font-size:11px;padding:.45rem .75rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);}
+    .milestone.hit{border-color:var(--accent);}
+    .ms-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;}
+    .milestone.hit .ms-dot{background:var(--accent);}
+    .ms-label{flex:1;color:var(--dim);}
+    .milestone.hit .ms-label{color:var(--ink);}
+    .ms-time{color:var(--dim);font-variant-numeric:tabular-nums;}
+    .milestone.hit .ms-time{color:var(--accent);}
+
+    .btn-row{display:flex;gap:8px;margin-bottom:1.5rem;}
+    .btn{font-family:var(--font);font-size:11px;font-weight:700;padding:.55rem 1rem;border-radius:5px;border:1px solid var(--border);cursor:pointer;letter-spacing:.04em;transition:opacity .15s;background:transparent;color:var(--ink);}
+    .btn:hover{opacity:.8;}
+    .btn-start{background:var(--accent);color:#0a0a0a;border-color:var(--accent);}
+    .btn-mark{background:transparent;color:var(--warn);border-color:var(--warn);}
+    .btn-end{background:transparent;color:var(--danger);border-color:var(--danger);}
+
+    .postmortem{display:none;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:1rem;margin-bottom:1.25rem;font-size:11px;line-height:1.9;}
+    .postmortem.show{display:block;}
+    .pm-row{display:flex;justify-content:space-between;}
+    .pm-label{color:var(--dim);}
+    .pm-val{color:var(--bright);}
+    .pm-good{color:var(--accent);}
+    .pm-bad{color:var(--danger);}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}
+    .foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/incident-timer</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./incident-timer</span></p>
+
+      <div class="big-timer" id="display">00:00</div>
+
+      <div class="milestones" id="milestones">
+        <div class="milestone" id="ms-5"><div class="ms-dot"></div><span class="ms-label">5 min — initial triage</span><span class="ms-time" id="ms-5-t">—</span></div>
+        <div class="milestone" id="ms-15"><div class="ms-dot"></div><span class="ms-label">15 min — escalate if unresolved</span><span class="ms-time" id="ms-15-t">—</span></div>
+        <div class="milestone" id="ms-30"><div class="ms-dot"></div><span class="ms-label">30 min — exec comms</span><span class="ms-time" id="ms-30-t">—</span></div>
+        <div class="milestone" id="ms-60"><div class="ms-dot"></div><span class="ms-label">60 min — SLA breach risk</span><span class="ms-time" id="ms-60-t">—</span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-start" id="start-btn">start incident</button>
+        <button class="btn btn-mark" id="mark-btn" disabled>mark detected</button>
+        <button class="btn btn-end"  id="end-btn"  disabled>resolve</button>
+      </div>
+
+      <div class="postmortem" id="pm">
+        <div class="pm-row"><span class="pm-label">total duration</span><span class="pm-val" id="pm-total">—</span></div>
+        <div class="pm-row"><span class="pm-label">time to detect (TTD)</span><span class="pm-val" id="pm-ttd">—</span></div>
+        <div class="pm-row"><span class="pm-label">time to resolve (TTR)</span><span class="pm-val" id="pm-ttr">—</span></div>
+        <div class="pm-row" style="margin-top:.5rem"><span class="pm-label">SLA status</span><span class="pm-val" id="pm-sla">—</span></div>
+      </div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    let start=null,detectTime=null,raf=null;
+    const disp=document.getElementById('display');
+    const startBtn=document.getElementById('start-btn');
+    const markBtn=document.getElementById('mark-btn');
+    const endBtn=document.getElementById('end-btn');
+    const pm=document.getElementById('pm');
+    const milestones=[5,15,30,60];
+    let hit={};
+
+    function fmt(ms){
+      const s=Math.floor(ms/1000),m=Math.floor(s/60),sec=s%60;
+      return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    }
+
+    function tick(){
+      const elapsed=Date.now()-start;
+      const mins=elapsed/60000;
+      disp.textContent=fmt(elapsed);
+      disp.className='big-timer'+(mins>=30?' danger':mins>=15?' warn':'');
+      milestones.forEach(m=>{
+        if(!hit[m]&&mins>=m){
+          hit[m]=true;
+          document.getElementById('ms-'+m).classList.add('hit');
+          document.getElementById('ms-'+m+'-t').textContent=fmt(elapsed);
+        }
+      });
+      raf=requestAnimationFrame(tick);
+    }
+
+    startBtn.addEventListener('click',()=>{
+      start=Date.now();hit={};
+      document.querySelectorAll('.milestone').forEach(m=>m.classList.remove('hit'));
+      milestones.forEach(m=>document.getElementById('ms-'+m+'-t').textContent='—');
+      pm.classList.remove('show');
+      markBtn.disabled=false;endBtn.disabled=false;
+      startBtn.textContent='restart';
+      cancelAnimationFrame(raf);tick();
+    });
+
+    markBtn.addEventListener('click',()=>{
+      detectTime=Date.now()-start;
+      markBtn.textContent='detected @ '+fmt(detectTime);
+      markBtn.disabled=true;
+    });
+
+    endBtn.addEventListener('click',()=>{
+      cancelAnimationFrame(raf);
+      const total=Date.now()-start;
+      document.getElementById('pm-total').textContent=fmt(total);
+      document.getElementById('pm-ttd').textContent=detectTime?fmt(detectTime):'not marked';
+      document.getElementById('pm-ttr').textContent=fmt(total);
+      const slaEl=document.getElementById('pm-sla');
+      if(total<30*60000){slaEl.textContent='✓ within 30 min SLA';slaEl.className='pm-val pm-good';}
+      else{slaEl.textContent='✗ exceeded 30 min SLA';slaEl.className='pm-val pm-bad';}
+      pm.classList.add('show');
+      endBtn.disabled=true;markBtn.disabled=true;
+    });
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

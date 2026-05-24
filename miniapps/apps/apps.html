@@ -9,248 +9,85 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0f0f0f;
-      --surface: #1a1a1a;
-      --border: #2a2a2a;
-      --chrome: #252525;
-      --ink: #d4d4d4;
-      --dim: #555;
-      --bright: #f0f0f0;
-      --prompt: #3fb950;
-      --accent: #c8f53a;
-      --link: #58a6ff;
-      --font: 'Fira Code', monospace;
-    }
-
-    body.light {
-      --bg: #f0f0f0;
-      --surface: #e2e2e2;
-      --border: #ccc;
-      --chrome: #d0d0d0;
-      --ink: #2a2a2a;
-      --dim: #888;
-      --bright: #111;
-      --prompt: #1a7f37;
-      --accent: #5a8a00;
-      --link: #0969da;
-    }
-
-    html, body {
-      height: 100%;
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--ink);
-      transition: background .2s, color .2s;
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-
-    .terminal {
-      width: 100%;
-      max-width: 860px;
-      height: calc(100vh - 3rem);
-      min-height: 500px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .titlebar {
-      background: var(--chrome);
-      border-bottom: 1px solid var(--border);
-      height: 36px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      gap: 7px;
-    }
-
-    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-    .dot.red    { background: #ff5f57; }
-    .dot.yellow { background: #ffbd2e; }
-    .dot.green  { background: #27c93f; }
-
-    .titlebar-title {
-      flex: 1;
-      text-align: center;
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: .04em;
-      margin-left: -60px;
-    }
-
-    .toggle {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 8px;
-      font-family: var(--font);
-      font-size: 10px;
-      color: var(--dim);
-      cursor: pointer;
-      letter-spacing: .06em;
-      transition: color .15s, border-color .15s;
-    }
-    .toggle:hover { color: var(--ink); border-color: var(--ink); }
-
-    .body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 2rem 2.5rem 3rem;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
-    }
-
-    .prompt { color: var(--prompt); font-weight: 700; }
-    .cmd    { color: var(--bright); }
-
-    .sec-prompt { font-size: 13px; margin-bottom: 1.5rem; }
-
-    /* ── TOY LIST ── */
-    .toy-list { list-style: none; }
-
-    .toy-list li {
-      display: flex;
-      align-items: baseline;
-      gap: .85rem;
-      padding: .75rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .toy-list li:last-child { border-bottom: none; }
-    .toy-list li:hover .toy-name { color: var(--bright); }
-    .toy-list li:hover .toy-arrow { color: var(--accent); }
-
-    .toy-num  { font-size: 10px; color: var(--dim); min-width: 20px; flex-shrink: 0; }
-
-    .toy-info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-
-    .toy-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink);
-      text-decoration: none;
-      transition: color .12s;
-    }
-
-    .toy-desc {
-      font-size: 11px;
-      color: var(--dim);
-      line-height: 1.6;
-    }
-
-    .toy-arrow {
-      font-size: 11px;
-      color: var(--dim);
-      flex-shrink: 0;
-      transition: color .12s;
-      text-decoration: none;
-    }
-
-    footer {
-      padding-top: 2rem;
-      font-size: 12px;
-      color: var(--dim);
-    }
-
-    footer a {
-      color: var(--link);
-      text-decoration: none;
-    }
-    footer a:hover { text-decoration: underline; }
-
-    @media (max-width: 560px) {
-      body { padding: .75rem; }
-      .terminal { height: calc(100vh - 1.5rem); border-radius: 8px; }
-      .body { padding: 1.25rem 1.25rem 2rem; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:860px;height:calc(100vh - 3rem);min-height:500px;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;flex-shrink:0;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;letter-spacing:.06em;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{flex:1;overflow-y:auto;padding:2rem 2.5rem 3rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .sec-prompt{font-size:13px;margin-bottom:.75rem;}
+    .sec-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.14em;margin:1.5rem 0 .6rem;display:flex;align-items:center;gap:8px;}
+    .sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+    .toy-list{list-style:none;}
+    .toy-list li{display:flex;align-items:baseline;gap:.85rem;padding:.7rem 0;border-bottom:1px solid var(--border);}
+    .toy-list li:last-child{border-bottom:none;}
+    .toy-list li:hover .toy-name{color:var(--bright);}
+    .toy-list li:hover .toy-arrow{color:var(--accent);}
+    .toy-num{font-size:10px;color:var(--dim);min-width:20px;flex-shrink:0;}
+    .toy-info{flex:1;display:flex;flex-direction:column;gap:2px;}
+    .toy-name{font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;transition:color .12s;}
+    .toy-desc{font-size:11px;color:var(--dim);line-height:1.5;}
+    .toy-arrow{font-size:11px;color:var(--dim);flex-shrink:0;transition:color .12s;text-decoration:none;}
+    footer{padding-top:2rem;font-size:12px;color:var(--dim);}
+    footer a{color:var(--link);text-decoration:none;}
+    footer a:hover{text-decoration:underline;}
+    @media(max-width:560px){body{padding:.75rem;}.terminal{height:calc(100vh - 1.5rem);border-radius:8px;}.body{padding:1.25rem 1.25rem 2rem;}}
   </style>
 </head>
 <body>
-  <div class="terminal" role="main">
-
+  <div class="terminal">
     <div class="titlebar">
-      <div class="dot red"></div>
-      <div class="dot yellow"></div>
-      <div class="dot green"></div>
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
       <span class="titlebar-title">sharan@sre: ~/browser-toys</span>
-      <button class="toggle" id="toggle" aria-label="Toggle light/dark mode">light</button>
+      <button class="toggle" id="toggle">light</button>
     </div>
-
     <div class="body">
+      <p class="sec-prompt"><span class="prompt">sharan@sre:~$</span> <span class="cmd">find . -type f -executable</span></p>
 
-      <section>
-        <p class="sec-prompt">
-          <span class="prompt">sharan@sre:~$</span> <span class="cmd">find . -type f -executable</span>
-        </p>
+      <div class="sec-label">sre / devops</div>
+      <ul class="toy-list">
+        <li><span class="toy-num">01</span><div class="toy-info"><a href="incident-timer.html" class="toy-name">./incident-timer</a><span class="toy-desc">Track TTD and TTR live. Milestones fire at 5, 15, 30, 60 min. Auto-generates a mini postmortem on resolve.</span></div><a href="incident-timer.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">02</span><div class="toy-info"><a href="cron-explainer.html" class="toy-name">./cron-explainer</a><span class="toy-desc">Type a cron expression, get plain English back. Shows next 5 run times.</span></div><a href="cron-explainer.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">03</span><div class="toy-info"><a href="http-status.html" class="toy-name">./http-status</a><span class="toy-desc">Type a status code, get the name, category, description, and when you'd see it on-call.</span></div><a href="http-status.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">04</span><div class="toy-info"><a href="slo-calculator.html" class="toy-name">./slo-calculator</a><span class="toy-desc">Input your SLO %, get error budgets across day/week/month/year with burn rate analysis.</span></div><a href="slo-calculator.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">05</span><div class="toy-info"><a href="regex-tester.html" class="toy-name">./regex-tester</a><span class="toy-desc">Live regex match highlighter with capture group breakdown. Pre-loaded with a log example.</span></div><a href="regex-tester.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">06</span><div class="toy-info"><a href="kubectl-explain.html" class="toy-name">./kubectl-explain</a><span class="toy-desc">Searchable kubectl cheat sheet. Click any command to expand examples, flags, and on-call notes.</span></div><a href="kubectl-explain.html" class="toy-arrow">↗</a></li>
+      </ul>
 
-        <ul class="toy-list">
-          <li>
-            <span class="toy-num">01</span>
-            <div class="toy-info">
-              <a href="passwordgen.html" class="toy-name">./passwordGenerator</a>
-              <span class="toy-desc">Generates a randomized password based on your requirements.</span>
-            </div>
-            <a href="passwordgen.html" class="toy-arrow">↗</a>
-          </li>
-          <li>
-            <span class="toy-num">02</span>
-            <div class="toy-info">
-              <a href="todo.html" class="toy-name">./toDo</a>
-              <span class="toy-desc">Persistent storage — todos survive browser restarts.</span>
-            </div>
-            <a href="todo.html" class="toy-arrow">↗</a>
-          </li>
-          <li>
-            <span class="toy-num">03</span>
-            <div class="toy-info">
-              <a href="pomodoro-timer.html" class="toy-name">./pomodoro_timer</a>
-              <span class="toy-desc">A simple focus timer. Might help you study, idk.</span>
-            </div>
-            <a href="pomodoro-timer.html" class="toy-arrow">↗</a>
-          </li>
-          <li>
-            <span class="toy-num">04</span>
-            <div class="toy-info">
-              <a href="typingspeed.html" class="toy-name">./typingSpeed</a>
-              <span class="toy-desc">Test how fast you actually type.</span>
-            </div>
-            <a href="typingspeed.html" class="toy-arrow">↗</a>
-          </li>
-          <li>
-            <span class="toy-num">05</span>
-            <div class="toy-info">
-              <a href="markdownapp.html" class="toy-name">./markdownapp</a>
-              <span class="toy-desc">Live markdown preview — write on the left, see it render on the right.</span>
-            </div>
-            <a href="markdownapp.html" class="toy-arrow">↗</a>
-          </li>
-        </ul>
-      </section>
+      <div class="sec-label">utilities</div>
+      <ul class="toy-list">
+        <li><span class="toy-num">07</span><div class="toy-info"><a href="unix-timestamp.html" class="toy-name">./unix-timestamp</a><span class="toy-desc">Live epoch counter. Convert epoch ↔ human datetime both ways, handles ms and s.</span></div><a href="unix-timestamp.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">08</span><div class="toy-info"><a href="base64.html" class="toy-name">./base64</a><span class="toy-desc">Encode and decode base64 in real time. Toggle between encode and decode modes.</span></div><a href="base64.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">09</span><div class="toy-info"><a href="json-formatter.html" class="toy-name">./json-formatter</a><span class="toy-desc">Paste ugly JSON on the left, get syntax-highlighted formatted output on the right. Toggle minify.</span></div><a href="json-formatter.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">10</span><div class="toy-info"><a href="diff-viewer.html" class="toy-name">./diff-viewer</a><span class="toy-desc">Paste two text blocks, see line-by-line diffs with +/- counts. No server, fully in-browser.</span></div><a href="diff-viewer.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">11</span><div class="toy-info"><a href="color-picker.html" class="toy-name">./color-picker</a><span class="toy-desc">Convert between hex, rgb, and hsl. Live swatch preview, one-click copy.</span></div><a href="color-picker.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">12</span><div class="toy-info"><a href="ascii-clock.html" class="toy-name">./ascii-clock</a><span class="toy-desc">Full block-character clock. Looks good as a screensaver on a secondary monitor.</span></div><a href="ascii-clock.html" class="toy-arrow">↗</a></li>
+      </ul>
 
-      <footer>
-        <span class="prompt">sharan@sre:~$</span> <a href="../../index.html">cd ..</a>
-      </footer>
+      <div class="sec-label">originals</div>
+      <ul class="toy-list">
+        <li><span class="toy-num">13</span><div class="toy-info"><a href="passwordgen.html" class="toy-name">./passwordGenerator</a><span class="toy-desc">Generates a randomized password based on your requirements.</span></div><a href="passwordgen.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">14</span><div class="toy-info"><a href="todo.html" class="toy-name">./toDo</a><span class="toy-desc">Persistent storage — todos survive browser restarts.</span></div><a href="todo.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">15</span><div class="toy-info"><a href="pomodoro-timer.html" class="toy-name">./pomodoro_timer</a><span class="toy-desc">A simple focus timer. Might help you study, idk.</span></div><a href="pomodoro-timer.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">16</span><div class="toy-info"><a href="typingspeed.html" class="toy-name">./typingSpeed</a><span class="toy-desc">Test how fast you actually type.</span></div><a href="typingspeed.html" class="toy-arrow">↗</a></li>
+        <li><span class="toy-num">17</span><div class="toy-info"><a href="markdownapp.html" class="toy-name">./markdownapp</a><span class="toy-desc">Live markdown preview — write on the left, see it render on the right.</span></div><a href="markdownapp.html" class="toy-arrow">↗</a></li>
+      </ul>
 
+      <footer><span class="prompt">sharan@sre:~$</span> <a href="../../index.html">cd ..</a></footer>
     </div>
   </div>
-
   <script>
-    const toggle = document.getElementById('toggle');
-    toggle.addEventListener('click', () => {
+    document.getElementById('toggle').addEventListener('click',function(){
       document.body.classList.toggle('light');
-      toggle.textContent = document.body.classList.contains('light') ? 'dark' : 'light';
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
     });
   </script>
 </body>

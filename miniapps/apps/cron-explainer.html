@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cron-explainer — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--danger:#f85149;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;--danger:#cf222e;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .input-row{display:flex;gap:8px;margin-bottom:1.25rem;}
+    .cron-input{flex:1;font-family:var(--font);font-size:14px;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--bright);outline:none;letter-spacing:.06em;transition:border-color .15s;}
+    .cron-input:focus{border-color:var(--accent);}
+    .cron-input.error{border-color:var(--danger);}
+    .cron-input::placeholder{color:var(--dim);}
+
+    .field-labels{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:.4rem;}
+    .field-label{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;text-align:center;}
+
+    .field-boxes{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:1.25rem;}
+    .field-box{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.4rem .25rem;text-align:center;font-size:12px;color:var(--dim);transition:border-color .2s,color .2s;}
+    .field-box.active{border-color:var(--accent);color:var(--accent);}
+
+    .result{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:.9rem 1rem;margin-bottom:1rem;min-height:54px;}
+    .result-text{font-size:13px;color:var(--bright);line-height:1.7;}
+    .result-text.err{color:var(--danger);}
+
+    .next-runs{margin-bottom:1.25rem;}
+    .next-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+    .run-item{font-size:11px;color:var(--ink);padding:.3rem 0;border-bottom:1px solid var(--border);}
+    .run-item:last-child{border-bottom:none;}
+
+    .presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem;}
+    .preset{font-family:var(--font);font-size:10px;padding:2px 9px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;letter-spacing:.04em;transition:color .15s,border-color .15s;}
+    .preset:hover{color:var(--accent);border-color:var(--accent);}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/cron-explainer</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./cron-explainer</span></p>
+
+      <div class="field-labels">
+        <div class="field-label">minute</div>
+        <div class="field-label">hour</div>
+        <div class="field-label">day</div>
+        <div class="field-label">month</div>
+        <div class="field-label">weekday</div>
+      </div>
+      <div class="field-boxes" id="field-boxes">
+        <div class="field-box" id="fb-0">*</div>
+        <div class="field-box" id="fb-1">*</div>
+        <div class="field-box" id="fb-2">*</div>
+        <div class="field-box" id="fb-3">*</div>
+        <div class="field-box" id="fb-4">*</div>
+      </div>
+
+      <div class="input-row">
+        <input class="cron-input" id="cron-input" placeholder="* * * * *" value="* * * * *" spellcheck="false">
+      </div>
+
+      <div class="result"><p class="result-text" id="result-text">runs every minute</p></div>
+
+      <div class="next-runs" id="next-runs"></div>
+
+      <div class="presets" id="presets"></div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const PRESETS=[
+      {label:'every minute',val:'* * * * *'},
+      {label:'every hour',val:'0 * * * *'},
+      {label:'daily midnight',val:'0 0 * * *'},
+      {label:'daily 3am',val:'0 3 * * *'},
+      {label:'every 5 min',val:'*/5 * * * *'},
+      {label:'weekdays 9am',val:'0 9 * * 1-5'},
+      {label:'sunday midnight',val:'0 0 * * 0'},
+      {label:'1st of month',val:'0 0 1 * *'},
+    ];
+
+    const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    const inp=document.getElementById('cron-input');
+    const resultEl=document.getElementById('result-text');
+    const nextEl=document.getElementById('next-runs');
+
+    // build presets
+    const pWrap=document.getElementById('presets');
+    PRESETS.forEach(p=>{
+      const b=document.createElement('button');
+      b.className='preset';b.textContent=p.label;
+      b.addEventListener('click',()=>{inp.value=p.val;explain();});
+      pWrap.appendChild(b);
+    });
+
+    function parsePart(part,min,max){
+      if(part==='*')return null;
+      if(part.startsWith('*/')){
+        const step=parseInt(part.slice(2));
+        return{type:'step',step};
+      }
+      if(part.includes('-')){
+        const[a,b]=part.split('-').map(Number);
+        return{type:'range',from:a,to:b};
+      }
+      if(part.includes(',')){
+        return{type:'list',vals:part.split(',').map(Number)};
+      }
+      const n=parseInt(part);
+      if(!isNaN(n))return{type:'exact',val:n};
+      return null;
+    }
+
+    function descPart(part,unit,names){
+      if(part===null)return null;
+      if(part.type==='step')return`every ${part.step} ${unit}s`;
+      if(part.type==='range'){
+        if(names)return`${names[part.from]} through ${names[part.to]}`;
+        return`${part.from} through ${part.to}`;
+      }
+      if(part.type==='list'){
+        if(names)return part.vals.map(v=>names[v]).join(', ');
+        return part.vals.join(', ');
+      }
+      if(part.type==='exact'){
+        if(names)return names[part.val];
+        return String(part.val);
+      }
+    }
+
+    function explain(){
+      const val=inp.value.trim();
+      const parts=val.split(/\s+/);
+      inp.classList.remove('error');
+
+      // update field boxes
+      for(let i=0;i<5;i++){
+        const fb=document.getElementById('fb-'+i);
+        fb.textContent=parts[i]||'*';
+        fb.className='field-box'+(parts[i]&&parts[i]!=='*'?' active':'');
+      }
+
+      if(parts.length!==5){
+        resultEl.textContent='needs exactly 5 fields: minute hour day month weekday';
+        resultEl.className='result-text err';
+        inp.classList.add('error');
+        nextEl.innerHTML='';return;
+      }
+
+      try{
+        const[min,hr,dom,mon,dow]=parts;
+        const pMin=parsePart(min,0,59);
+        const pHr =parsePart(hr,0,23);
+        const pDom=parsePart(dom,1,31);
+        const pMon=parsePart(mon,1,12);
+        const pDow=parsePart(dow,0,6);
+
+        let sentence='runs ';
+        if(min==='*'&&hr==='*'&&dom==='*'&&mon==='*'&&dow==='*'){
+          sentence+='every minute';
+        } else {
+          // minute
+          if(pMin&&pMin.type==='step')sentence+=`every ${pMin.step} minutes`;
+          else if(pMin)sentence+=`at minute ${descPart(pMin,'minute')}`;
+          else sentence+='every minute';
+          // hour
+          if(pHr&&pHr.type==='step')sentence+=`, every ${pHr.step} hours`;
+          else if(pHr)sentence+=` of hour ${descPart(pHr,'hour')}`;
+          else if(min!=='*')sentence+=' of every hour';
+          // dom
+          if(pDom)sentence+=`, on day ${descPart(pDom,'day')} of the month`;
+          // month
+          if(pMon)sentence+=`, in ${descPart(pMon,'month',MONTHS)}`;
+          // dow
+          if(pDow)sentence+=`, on ${descPart(pDow,'weekday',DAYS)}`;
+        }
+
+        resultEl.textContent=sentence;
+        resultEl.className='result-text';
+        renderNext(parts);
+      } catch(e){
+        resultEl.textContent='could not parse expression';
+        resultEl.className='result-text err';
+        inp.classList.add('error');
+        nextEl.innerHTML='';
+      }
+    }
+
+    function renderNext(parts){
+      const[min,hr,dom,mon,dow]=parts;
+      // approximate next 5 run times using Date
+      const runs=[];
+      const now=new Date();
+      const d=new Date(now);
+      d.setSeconds(0,0);
+      d.setMinutes(d.getMinutes()+1);
+      let attempts=0;
+      while(runs.length<5&&attempts<10000){
+        attempts++;
+        if(matchesCron(d,min,hr,dom,mon,dow))runs.push(new Date(d));
+        d.setMinutes(d.getMinutes()+1);
+      }
+      if(!runs.length){nextEl.innerHTML='';return;}
+      nextEl.innerHTML=`<div class="next-label">next runs</div>`+
+        runs.map(r=>`<div class="run-item">> ${r.toLocaleString()}</div>`).join('');
+    }
+
+    function matchesCron(d,min,hr,dom,mon,dow){
+      return matchField(d.getMinutes(),min,0,59)&&
+             matchField(d.getHours(),hr,0,23)&&
+             matchField(d.getDate(),dom,1,31)&&
+             matchField(d.getMonth()+1,mon,1,12)&&
+             matchField(d.getDay(),dow,0,6);
+    }
+
+    function matchField(val,expr,min,max){
+      if(expr==='*')return true;
+      if(expr.startsWith('*/')){const s=parseInt(expr.slice(2));return val%s===0;}
+      if(expr.includes('-')){const[a,b]=expr.split('-').map(Number);return val>=a&&val<=b;}
+      if(expr.includes(','))return expr.split(',').map(Number).includes(val);
+      return parseInt(expr)===val;
+    }
+
+    inp.addEventListener('input',explain);
+    explain();
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

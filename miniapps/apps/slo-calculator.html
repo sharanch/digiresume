@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>slo-calculator — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--danger:#f85149;--warn:#ffb700;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;--danger:#cf222e;--warn:#b45000;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:520px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .slo-input-row{display:flex;align-items:center;gap:.5rem;margin-bottom:1.25rem;}
+    .slo-label{font-size:11px;color:var(--dim);min-width:60px;text-transform:uppercase;letter-spacing:.08em;}
+    .slo-input{font-family:var(--font);font-size:1.4rem;font-weight:700;padding:.4rem .6rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--bright);outline:none;width:120px;transition:border-color .15s;letter-spacing:.04em;}
+    .slo-input:focus{border-color:var(--accent);}
+    .slo-pct{font-size:1.4rem;color:var(--dim);}
+
+    .presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+    .preset{font-family:var(--font);font-size:10px;padding:2px 9px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .preset:hover,.preset.active{color:var(--accent);border-color:var(--accent);}
+
+    .budget-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem;}
+    .budget-cell{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:.8rem .9rem;}
+    .bc-period{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+    .bc-val{font-size:1.1rem;font-weight:700;color:var(--accent);letter-spacing:.02em;font-variant-numeric:tabular-nums;}
+    .bc-sub{font-size:10px;color:var(--dim);margin-top:2px;}
+
+    .burn-section{margin-bottom:1.5rem;}
+    .burn-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem;}
+    .burn-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:.3rem 0;border-bottom:1px solid var(--border);}
+    .burn-row:last-child{border-bottom:none;}
+    .burn-rate{color:var(--dim);}
+    .burn-ttd{color:var(--ink);font-variant-numeric:tabular-nums;}
+    .burn-ttd.warn{color:var(--warn);}
+    .burn-ttd.danger{color:var(--danger);}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/slo-calculator</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./slo-calculator</span></p>
+
+      <div class="slo-input-row">
+        <span class="slo-label">SLO</span>
+        <input class="slo-input" id="slo-val" type="number" min="0" max="100" step="0.001" value="99.9">
+        <span class="slo-pct">%</span>
+      </div>
+
+      <div class="presets" id="presets">
+        <button class="preset" data-val="99">99%</button>
+        <button class="preset active" data-val="99.9">99.9%</button>
+        <button class="preset" data-val="99.95">99.95%</button>
+        <button class="preset" data-val="99.99">99.99%</button>
+        <button class="preset" data-val="99.999">99.999%</button>
+      </div>
+
+      <div class="budget-grid" id="budget-grid"></div>
+
+      <div class="burn-section">
+        <div class="burn-label">error budget burn rate — monthly</div>
+        <div id="burn-rates"></div>
+      </div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const inp=document.getElementById('slo-val');
+    const grid=document.getElementById('budget-grid');
+    const burnEl=document.getElementById('burn-rates');
+
+    function fmtTime(mins){
+      if(mins<1)return`${(mins*60).toFixed(1)}s`;
+      if(mins<60)return`${mins.toFixed(1)} min`;
+      if(mins<1440)return`${(mins/60).toFixed(2)} hr`;
+      return`${(mins/1440).toFixed(2)} days`;
+    }
+
+    function calc(){
+      const slo=parseFloat(inp.value);
+      if(isNaN(slo)||slo<=0||slo>100)return;
+      const errPct=(100-slo)/100;
+      const periods=[
+        {label:'per day',   mins:60*24},
+        {label:'per week',  mins:60*24*7},
+        {label:'per month', mins:60*24*30},
+        {label:'per year',  mins:60*24*365},
+      ];
+      grid.innerHTML=periods.map(p=>{
+        const budget=errPct*p.mins;
+        return`<div class="budget-cell">
+          <div class="bc-period">${p.label}</div>
+          <div class="bc-val">${fmtTime(budget)}</div>
+          <div class="bc-sub">${(errPct*100).toFixed(4)}% of ${fmtTime(p.mins)}</div>
+        </div>`;
+      }).join('');
+
+      // burn rates
+      const monthlyBudget=errPct*60*24*30;
+      const rates=[1,2,5,10,14.4,30];
+      burnEl.innerHTML=rates.map(r=>{
+        const ttd=monthlyBudget/r;
+        const cls=r>=14.4?'danger':r>=5?'warn':'';
+        return`<div class="burn-row">
+          <span class="burn-rate">${r}x burn rate</span>
+          <span class="burn-ttd ${cls}">budget gone in ${fmtTime(ttd)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    inp.addEventListener('input',()=>{
+      document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));
+      calc();
+    });
+
+    document.getElementById('presets').addEventListener('click',e=>{
+      if(!e.target.dataset.val)return;
+      inp.value=e.target.dataset.val;
+      document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      calc();
+    });
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+
+    calc();
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>diff-viewer — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--add-bg:#0d2a0d;--add-ink:#3fb950;--rem-bg:#2a0d0d;--rem-ink:#f85149;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;--add-bg:#d4f0d4;--add-ink:#1a7f37;--rem-bg:#f0d4d4;--rem-ink:#cf222e;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:960px;height:calc(100vh - 3rem);min-height:500px;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;flex-shrink:0;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .top-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;overflow:hidden;}
+    .col-head{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;padding:.6rem 1.25rem .4rem;border-bottom:1px solid var(--border);background:var(--surface);}
+    .col-head.right{border-left:1px solid var(--border);}
+    textarea{font-family:var(--font);font-size:12px;line-height:1.7;padding:1rem 1.25rem;background:var(--bg);color:var(--ink);border:none;resize:none;outline:none;overflow-y:auto;}
+    textarea.right{border-left:1px solid var(--border);}
+    textarea::placeholder{color:var(--dim);}
+    .diff-wrap{grid-column:1/-1;border-top:1px solid var(--border);overflow-y:auto;background:var(--bg);max-height:40%;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+    .diff-head{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;padding:.5rem 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;}
+    .diff-line{font-family:var(--font);font-size:12px;padding:.15rem 1.25rem;white-space:pre;display:flex;gap:.75rem;line-height:1.6;}
+    .diff-line.add{background:var(--add-bg);color:var(--add-ink);}
+    .diff-line.rem{background:var(--rem-bg);color:var(--rem-ink);}
+    .diff-line.ctx{color:var(--dim);}
+    .line-num{color:var(--dim);min-width:28px;flex-shrink:0;font-size:10px;padding-top:2px;}
+    .diff-sym{min-width:12px;flex-shrink:0;}
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding:.65rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+    .stat{font-size:11px;color:var(--dim);}
+    .stat .add{color:var(--add-ink);}.stat .rem{color:var(--rem-ink);}
+    .prompt{color:var(--prompt);font-weight:700;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/diff-viewer</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="top-wrap">
+      <div class="col-head"><span class="prompt">$</span> original</div>
+      <div class="col-head right"><span class="prompt">$</span> modified</div>
+      <textarea id="left" placeholder="paste original text here..." spellcheck="false"></textarea>
+      <textarea id="right" class="right" placeholder="paste modified text here..." spellcheck="false"></textarea>
+      <div class="diff-wrap" id="diff-wrap">
+        <div class="diff-head">diff output</div>
+        <div id="diff-out"></div>
+      </div>
+    </div>
+    <div class="foot">
+      <span><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></span>
+      <span class="stat" id="stat"></span>
+    </div>
+  </div>
+  <script>
+    const leftEl=document.getElementById('left');
+    const rightEl=document.getElementById('right');
+    const diffOut=document.getElementById('diff-out');
+    const statEl=document.getElementById('stat');
+
+    function lcs(a,b){
+      const m=a.length,n=b.length;
+      const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+      for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)
+        dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+      const res=[];let i=m,j=n;
+      while(i>0&&j>0){
+        if(a[i-1]===b[j-1]){res.unshift({type:'ctx',val:a[i-1],li:i-1,ri:j-1});i--;j--;}
+        else if(dp[i-1][j]>=dp[i][j-1]){res.unshift({type:'rem',val:a[i-1],li:i-1});i--;}
+        else{res.unshift({type:'add',val:b[j-1],ri:j-1});j--;}
+      }
+      while(i>0){res.unshift({type:'rem',val:a[i-1],li:i-1});i--;}
+      while(j>0){res.unshift({type:'add',val:b[j-1],ri:j-1});j--;}
+      return res;
+    }
+
+    function escape(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+    function diff(){
+      const a=leftEl.value.split('\n');
+      const b=rightEl.value.split('\n');
+      if(!leftEl.value&&!rightEl.value){diffOut.innerHTML='';statEl.innerHTML='';return;}
+      const patches=lcs(a,b);
+      let adds=0,rems=0;
+      diffOut.innerHTML=patches.map(p=>{
+        if(p.type==='add'){adds++;return`<div class="diff-line add"><span class="line-num">${(p.ri+1)}</span><span class="diff-sym">+</span>${escape(p.val)}</div>`;}
+        if(p.type==='rem'){rems++;return`<div class="diff-line rem"><span class="line-num">${(p.li+1)}</span><span class="diff-sym">-</span>${escape(p.val)}</div>`;}
+        return`<div class="diff-line ctx"><span class="line-num">${(p.li+1)}</span><span class="diff-sym"> </span>${escape(p.val)}</div>`;
+      }).join('');
+      statEl.innerHTML=`<span class="add">+${adds}</span> &nbsp;<span class="rem">-${rems}</span> &nbsp;lines`;
+    }
+
+    [leftEl,rightEl].forEach(el=>el.addEventListener('input',diff));
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

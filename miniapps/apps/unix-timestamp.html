@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>unix-timestamp — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:520px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .now-block{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}
+    .now-val{font-size:1.5rem;font-weight:700;color:var(--accent);letter-spacing:.04em;font-variant-numeric:tabular-nums;}
+    .now-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;}
+    .copy-mini{font-family:var(--font);font-size:10px;padding:2px 8px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;transition:color .12s,border-color .12s;}
+    .copy-mini:hover{color:var(--accent);border-color:var(--accent);}
+
+    .divider{height:1px;background:var(--border);margin:1.25rem 0;}
+
+    .convert-block{margin-bottom:1.25rem;}
+    .cb-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+    .cb-input{width:100%;font-family:var(--font);font-size:13px;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--bright);outline:none;transition:border-color .15s;letter-spacing:.04em;}
+    .cb-input:focus{border-color:var(--accent);}
+    .cb-input::placeholder{color:var(--dim);}
+    .cb-result{margin-top:.5rem;font-size:12px;color:var(--ink);padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;min-height:36px;line-height:1.6;}
+    .cb-result .val{color:var(--bright);}
+    .cb-result .err{color:#f85149;}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/unix-timestamp</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./unix-timestamp</span></p>
+
+      <div class="now-block">
+        <div>
+          <div class="now-val" id="now-ts">—</div>
+          <div class="now-label">current unix timestamp</div>
+        </div>
+        <button class="copy-mini" id="copy-now">copy</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="convert-block">
+        <div class="cb-label">epoch → human</div>
+        <input class="cb-input" id="epoch-in" placeholder="1704067200" type="number">
+        <div class="cb-result" id="epoch-out"></div>
+      </div>
+
+      <div class="convert-block">
+        <div class="cb-label">human → epoch</div>
+        <input class="cb-input" id="human-in" placeholder="2024-01-01 00:00:00" type="text">
+        <div class="cb-result" id="human-out"></div>
+      </div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const nowEl=document.getElementById('now-ts');
+
+    function updateNow(){
+      nowEl.textContent=Math.floor(Date.now()/1000);
+    }
+    setInterval(updateNow,1000);updateNow();
+
+    document.getElementById('copy-now').addEventListener('click',()=>{
+      navigator.clipboard.writeText(Math.floor(Date.now()/1000));
+    });
+
+    document.getElementById('epoch-in').addEventListener('input',function(){
+      const out=document.getElementById('epoch-out');
+      const v=parseInt(this.value);
+      if(!this.value){out.innerHTML='';return;}
+      if(isNaN(v)){out.innerHTML='<span class="err">invalid number</span>';return;}
+      // handle ms vs s
+      const ms=String(v).length>11?v:v*1000;
+      const d=new Date(ms);
+      if(isNaN(d)){out.innerHTML='<span class="err">invalid timestamp</span>';return;}
+      out.innerHTML=`<span class="val">${d.toUTCString()}</span><br><span style="color:var(--dim)">${d.toLocaleString()} local</span>`;
+    });
+
+    document.getElementById('human-in').addEventListener('input',function(){
+      const out=document.getElementById('human-out');
+      if(!this.value){out.innerHTML='';return;}
+      const d=new Date(this.value);
+      if(isNaN(d)){out.innerHTML='<span class="err">could not parse date</span>';return;}
+      const sec=Math.floor(d.getTime()/1000);
+      out.innerHTML=`<span class="val">${sec}</span> <span style="color:var(--dim)">seconds · ${d.getTime()} ms</span>`;
+    });
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

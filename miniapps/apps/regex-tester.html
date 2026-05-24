@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>regex-tester — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--danger:#f85149;--hl:#2a3a00;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;--danger:#cf222e;--hl:#d4f0a0;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:580px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .regex-row{display:flex;align-items:center;gap:0;margin-bottom:.75rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;overflow:hidden;transition:border-color .15s;}
+    .regex-row:focus-within{border-color:var(--accent);}
+    .regex-slash{font-size:1.1rem;color:var(--dim);padding:0 .5rem;flex-shrink:0;}
+    .regex-input{flex:1;font-family:var(--font);font-size:13px;padding:.6rem 0;background:transparent;border:none;color:var(--bright);outline:none;}
+    .regex-flags{font-family:var(--font);font-size:13px;padding:.6rem .5rem;background:transparent;border:none;border-left:1px solid var(--border);color:var(--accent);outline:none;width:60px;}
+
+    .section-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+
+    .test-input{width:100%;font-family:var(--font);font-size:12.5px;padding:.65rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--ink);resize:none;outline:none;height:100px;margin-bottom:.75rem;transition:border-color .15s;line-height:1.7;}
+    .test-input:focus{border-color:var(--accent);}
+
+    .result-display{font-family:var(--font);font-size:12.5px;padding:.65rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;min-height:100px;margin-bottom:.75rem;line-height:1.7;white-space:pre-wrap;word-break:break-all;color:var(--ink);}
+    .result-display mark{background:var(--hl);color:var(--accent);border-radius:2px;}
+
+    .status-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;font-size:11px;}
+    .match-count{color:var(--accent);}
+    .match-count.none{color:var(--danger);}
+    .err-msg{color:var(--danger);}
+
+    .groups{margin-bottom:1.25rem;}
+    .group-row{display:flex;gap:.75rem;font-size:11px;padding:.3rem 0;border-bottom:1px solid var(--border);}
+    .group-row:last-child{border-bottom:none;}
+    .group-idx{color:var(--dim);min-width:60px;}
+    .group-val{color:var(--bright);}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/regex-tester</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./regex-tester</span></p>
+
+      <div class="section-label">pattern</div>
+      <div class="regex-row">
+        <span class="regex-slash">/</span>
+        <input class="regex-input" id="pattern" placeholder="[a-z]+" value="(ERROR|WARN).*">
+        <span class="regex-slash">/</span>
+        <input class="regex-flags" id="flags" placeholder="gim" value="gi">
+      </div>
+
+      <div class="section-label" style="margin-bottom:.4rem">test string</div>
+      <textarea class="test-input" id="test-str" spellcheck="false">2024-01-15 02:14:33 ERROR payment-svc: DB connection timeout
+2024-01-15 02:14:35 WARN retry attempt 1/3
+2024-01-15 02:14:37 INFO health check ok
+2024-01-15 02:14:39 ERROR payment-svc: DB connection timeout</textarea>
+
+      <div class="section-label" style="margin-bottom:.4rem">matches highlighted</div>
+      <div class="result-display" id="result"></div>
+
+      <div class="status-bar">
+        <span id="match-count" class="match-count">—</span>
+        <span id="err-msg" class="err-msg"></span>
+      </div>
+
+      <div class="groups" id="groups"></div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const patEl=document.getElementById('pattern');
+    const flagEl=document.getElementById('flags');
+    const testEl=document.getElementById('test-str');
+    const resultEl=document.getElementById('result');
+    const countEl=document.getElementById('match-count');
+    const errEl=document.getElementById('err-msg');
+    const groupsEl=document.getElementById('groups');
+
+    function escape(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+    function run(){
+      errEl.textContent='';
+      const pat=patEl.value;
+      const flags=(flagEl.value||'').replace(/[^gimsuy]/g,'');
+      const text=testEl.value;
+      if(!pat){resultEl.textContent=text;countEl.textContent='—';countEl.className='match-count';groupsEl.innerHTML='';return;}
+      let re;
+      try{re=new RegExp(pat,flags.includes('g')?flags:flags+'g');}
+      catch(e){errEl.textContent=e.message;resultEl.textContent=text;countEl.textContent='invalid pattern';countEl.className='match-count none';groupsEl.innerHTML='';return;}
+
+      const matches=[...text.matchAll(re)];
+      countEl.textContent=matches.length?`${matches.length} match${matches.length>1?'es':''}`:' no matches';
+      countEl.className='match-count'+(matches.length?'':' none');
+
+      // highlight
+      let out='',last=0;
+      const safeText=text;
+      matches.forEach(m=>{
+        out+=escape(safeText.slice(last,m.index));
+        out+=`<mark>${escape(m[0])}</mark>`;
+        last=m.index+m[0].length;
+      });
+      out+=escape(safeText.slice(last));
+      resultEl.innerHTML=out;
+
+      // groups
+      if(matches.length&&matches[0].length>1){
+        const first=matches[0];
+        groupsEl.innerHTML='<div class="section-label" style="margin-bottom:.4rem">capture groups (first match)</div>'+
+          [...first].slice(1).map((g,i)=>`<div class="group-row"><span class="group-idx">group ${i+1}</span><span class="group-val">${g??'<undefined>'}</span></div>`).join('');
+      } else {groupsEl.innerHTML='';}
+    }
+
+    [patEl,flagEl,testEl].forEach(el=>el.addEventListener('input',run));
+    run();
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>

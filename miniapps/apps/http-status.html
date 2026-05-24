@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>http-status — sharanch.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2a2a2a;--chrome:#252525;--ink:#d4d4d4;--dim:#555;--bright:#f0f0f0;--prompt:#3fb950;--accent:#c8f53a;--link:#58a6ff;--font:'Fira Code',monospace;}
+    body.light{--bg:#f0f0f0;--surface:#e2e2e2;--border:#ccc;--chrome:#d0d0d0;--ink:#2a2a2a;--dim:#888;--bright:#111;--prompt:#1a7f37;--accent:#5a8a00;--link:#0969da;}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);transition:background .2s,color .2s;}
+    body{display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+    .terminal{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .titlebar{background:var(--chrome);border-bottom:1px solid var(--border);height:36px;display:flex;align-items:center;padding:0 12px;gap:7px;}
+    .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .dot.red{background:#ff5f57;}.dot.yellow{background:#ffbd2e;}.dot.green{background:#27c93f;}
+    .titlebar-title{flex:1;text-align:center;font-size:11px;color:var(--dim);letter-spacing:.04em;margin-left:-60px;}
+    .toggle{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-family:var(--font);font-size:10px;color:var(--dim);cursor:pointer;transition:color .15s,border-color .15s;}
+    .toggle:hover{color:var(--ink);border-color:var(--ink);}
+    .body{padding:1.75rem 2rem 1.5rem;}
+    .prompt{color:var(--prompt);font-weight:700;}.cmd{color:var(--bright);}
+    .head{font-size:13px;margin-bottom:1.5rem;}
+
+    .search-row{display:flex;gap:8px;margin-bottom:1.25rem;}
+    .search-input{flex:1;font-family:var(--font);font-size:1.3rem;font-weight:700;padding:.5rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--bright);outline:none;width:90px;transition:border-color .15s;letter-spacing:.08em;}
+    .search-input:focus{border-color:var(--accent);}
+    .search-input::placeholder{color:var(--dim);font-size:1rem;}
+
+    .status-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:5px;padding:1rem;margin-bottom:1rem;transition:border-color .2s;}
+    .status-card.s1xx{border-left-color:#58a6ff;}
+    .status-card.s2xx{border-left-color:#3fb950;}
+    .status-card.s3xx{border-left-color:#c8f53a;}
+    .status-card.s4xx{border-left-color:#ffb700;}
+    .status-card.s5xx{border-left-color:#f85149;}
+    .status-code{font-size:2rem;font-weight:700;color:var(--bright);letter-spacing:.06em;}
+    .status-name{font-size:13px;color:var(--ink);margin-top:.25rem;}
+    .status-category{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-top:.15rem;}
+    .status-desc{font-size:12px;color:var(--dim);margin-top:.75rem;line-height:1.7;padding-top:.75rem;border-top:1px solid var(--border);}
+    .status-when{font-size:11px;color:var(--ink);margin-top:.5rem;line-height:1.7;}
+
+    .all-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem;}
+    .all-chip{font-family:var(--font);font-size:10px;padding:2px 8px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;transition:color .12s,border-color .12s;}
+    .all-chip:hover{color:var(--ink);border-color:var(--ink);}
+    .all-chip.s2xx{color:#3fb950;border-color:#3fb950;}
+    .all-chip.s3xx{color:#a0c040;border-color:#a0c040;}
+    .all-chip.s4xx{color:#ffb700;border-color:#ffb700;}
+    .all-chip.s5xx{color:#f85149;border-color:#f85149;}
+
+    .foot{font-size:12px;color:var(--dim);border-top:1px solid var(--border);padding-top:1rem;}
+    .foot a{color:var(--link);text-decoration:none;}.foot a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+      <span class="titlebar-title">sharan@sre: ~/http-status</span>
+      <button class="toggle" id="toggle">light</button>
+    </div>
+    <div class="body">
+      <p class="head"><span class="prompt">sharan@sre:~$</span> <span class="cmd">./http-status</span></p>
+
+      <div class="search-row">
+        <input class="search-input" id="search" placeholder="404" maxlength="3" type="number">
+      </div>
+
+      <div id="card" class="status-card" style="display:none"></div>
+
+      <div class="all-list" id="all-list"></div>
+
+      <div class="foot"><span class="prompt">sharan@sre:~$</span> <a href="apps.html">cd ..</a></div>
+    </div>
+  </div>
+  <script>
+    const CODES={
+      100:{name:'Continue',cat:'1xx Informational',desc:'Server has received the request headers. Client should proceed to send the request body.',when:'Used in large POST requests — client sends Expect: 100-continue header first.'},
+      101:{name:'Switching Protocols',cat:'1xx Informational',desc:'Server is switching protocols as requested by the client.',when:'WebSocket upgrades: the connection switches from HTTP to WS.'},
+      200:{name:'OK',cat:'2xx Success',desc:'Request succeeded. Response body contains the requested data.',when:'Standard successful GET, POST, PUT response.'},
+      201:{name:'Created',cat:'2xx Success',desc:'Request succeeded and a new resource was created.',when:'POST to create a resource — response includes Location header.'},
+      204:{name:'No Content',cat:'2xx Success',desc:'Request succeeded but there is no response body.',when:'DELETE requests, or PUT updates that return nothing.'},
+      206:{name:'Partial Content',cat:'2xx Success',desc:'Server is delivering only part of the resource.',when:'Range requests for large files, video streaming.'},
+      301:{name:'Moved Permanently',cat:'3xx Redirection',desc:'Resource has permanently moved to a new URL.',when:'Domain changes, HTTP → HTTPS redirects. Browsers cache this.'},
+      302:{name:'Found',cat:'3xx Redirection',desc:'Resource temporarily resides at a different URL.',when:'Temporary redirects, OAuth flows.'},
+      304:{name:'Not Modified',cat:'3xx Redirection',desc:'Resource has not changed since last request.',when:'Browser sends If-None-Match / If-Modified-Since — cache is valid.'},
+      307:{name:'Temporary Redirect',cat:'3xx Redirection',desc:'Temporary redirect — method and body must not change.',when:'Unlike 302, method is preserved. Use for POST redirects.'},
+      308:{name:'Permanent Redirect',cat:'3xx Redirection',desc:'Permanent redirect — method and body must not change.',when:'Permanent equivalent of 307. Replaces 301 when preserving method matters.'},
+      400:{name:'Bad Request',cat:'4xx Client Error',desc:'Server cannot process the request due to a client error.',when:'Malformed JSON, missing required fields, invalid query params.'},
+      401:{name:'Unauthorized',cat:'4xx Client Error',desc:'Authentication is required and has failed or not been provided.',when:'Missing or expired JWT/API key. Despite the name, it means unauthenticated.'},
+      403:{name:'Forbidden',cat:'4xx Client Error',desc:'Server understood the request but refuses to authorize it.',when:'Authenticated user lacks permission. Different from 401.'},
+      404:{name:'Not Found',cat:'4xx Client Error',desc:'Server cannot find the requested resource.',when:'Wrong URL, deleted resource, or intentionally hiding 403 as 404.'},
+      405:{name:'Method Not Allowed',cat:'4xx Client Error',desc:'HTTP method is not supported for this endpoint.',when:'Sending DELETE to a read-only endpoint.'},
+      408:{name:'Request Timeout',cat:'4xx Client Error',desc:'Server timed out waiting for the request.',when:'Client too slow to send the full request body.'},
+      409:{name:'Conflict',cat:'4xx Client Error',desc:'Request conflicts with the current state of the server.',when:'Duplicate resource creation, version conflicts in optimistic locking.'},
+      410:{name:'Gone',cat:'4xx Client Error',desc:'Resource has been permanently deleted and will not return.',when:'Intentional tombstone — stronger signal than 404.'},
+      422:{name:'Unprocessable Entity',cat:'4xx Client Error',desc:'Request is well-formed but contains semantic errors.',when:'Validation failures — correct JSON structure but invalid field values.'},
+      429:{name:'Too Many Requests',cat:'4xx Client Error',desc:'Client has sent too many requests in a given time window.',when:'Rate limiting. Response includes Retry-After header.'},
+      500:{name:'Internal Server Error',cat:'5xx Server Error',desc:'Server encountered an unexpected condition.',when:'Unhandled exception, panic, or crash. Check your logs.'},
+      501:{name:'Not Implemented',cat:'5xx Server Error',desc:'Server does not support the functionality required.',when:'HTTP method not recognised by the server.'},
+      502:{name:'Bad Gateway',cat:'5xx Server Error',desc:'Server received an invalid response from an upstream server.',when:'Reverse proxy (nginx/ALB) can\'t reach the backend. Backend crashed?'},
+      503:{name:'Service Unavailable',cat:'5xx Server Error',desc:'Server is temporarily unable to handle the request.',when:'Overloaded or down for maintenance. Pair with Retry-After.'},
+      504:{name:'Gateway Timeout',cat:'5xx Server Error',desc:'Upstream server did not respond in time.',when:'Backend too slow. Check DB queries, external API calls.'},
+      508:{name:'Loop Detected',cat:'5xx Server Error',desc:'Server detected an infinite loop while processing the request.',when:'WebDAV infinite redirect loop.'},
+    };
+
+    function catClass(code){
+      if(code<200)return 's1xx';
+      if(code<300)return 's2xx';
+      if(code<400)return 's3xx';
+      if(code<500)return 's4xx';
+      return 's5xx';
+    }
+
+    const card=document.getElementById('card');
+    const searchEl=document.getElementById('search');
+
+    function showCode(code){
+      const c=parseInt(code);
+      const d=CODES[c];
+      if(!d){card.style.display='none';return;}
+      card.style.display='block';
+      card.className='status-card '+catClass(c);
+      card.innerHTML=`
+        <div class="status-code">${c}</div>
+        <div class="status-name">${d.name}</div>
+        <div class="status-category">${d.cat}</div>
+        <div class="status-desc">${d.desc}</div>
+        <div class="status-when">> ${d.when}</div>
+      `;
+    }
+
+    // build chip list
+    const list=document.getElementById('all-list');
+    Object.keys(CODES).forEach(c=>{
+      const btn=document.createElement('button');
+      btn.className='all-chip '+catClass(parseInt(c));
+      btn.textContent=c;
+      btn.addEventListener('click',()=>{searchEl.value=c;showCode(c);});
+      list.appendChild(btn);
+    });
+
+    searchEl.addEventListener('input',()=>showCode(searchEl.value));
+    showCode(200);
+
+    document.getElementById('toggle').addEventListener('click',function(){
+      document.body.classList.toggle('light');
+      this.textContent=document.body.classList.contains('light')?'dark':'light';
+    });
+  </script>
+</body>
+</html>
